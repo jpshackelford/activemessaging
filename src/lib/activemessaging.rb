@@ -36,10 +36,11 @@ module ActiveMessaging
     require 'activemessaging/trace_filter'
 
     # load all under the adapters dir 
-    Dir[Merb.root + '/gems/gems/activemessaging/lib/activemessaging/adapters/*.rb'].each{|a| 
+    Dir[File.dirname(__FILE__) + '/activemessaging/adapters/*.rb'].each{|a| 
       begin
         adapter_name = File.basename(a, ".rb")
         require 'activemessaging/adapters/' + adapter_name
+        logger.debug "loaded #{adapter_name}"
       rescue RuntimeError, LoadError => e
         logger.debug "ActiveMessaging: adapter #{adapter_name} not loaded: #{ e.message }"
       end
@@ -50,7 +51,7 @@ module ActiveMessaging
     path = File.expand_path("#{Merb.root}/config/messaging.rb")
     begin
       load path
-    rescue MissingSourceFile
+    rescue LoadError
       logger.debug "ActiveMessaging: no '#{path}' file to load"
     rescue
       raise $!, " ActiveMessaging: problems trying to load '#{path}': \n\t#{$!.message}"

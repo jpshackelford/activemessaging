@@ -1,4 +1,6 @@
-class ProcessorGenerator < RubiGen::Base
+require File.dirname(__FILE__) + '/../../lib/activemessaging/named_base'
+
+class ProcessorGenerator < NamedBase
   def manifest
     record do |m|
       path = 'app/processors'

@@ -1,7 +1,7 @@
 # load the rails environment
 # TODO currently requires you to run tests as a installed plugin, we should try to fix this
 ENV['MERB_ENV'] = "test"
-require File.expand_path(File.dirname(__FILE__) + "/../../../../config/merb_init")
+# require File.expand_path(File.dirname(__FILE__) + "/../../../../config/merb_init")
 
 # load other libraries
 require 'test/unit'

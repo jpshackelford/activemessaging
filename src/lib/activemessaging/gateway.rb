@@ -32,6 +32,7 @@ module ActiveMessaging
               begin
                 Thread.current[:message] = nil
                 Thread.current[:message] = conn.receive
+                puts "Receiving message #{Thread.current[:message]}"
               rescue StopProcessingException
                 ActiveMessaging.logger.error "ActiveMessaging: thread[#{name}]: Processing Stopped - receive interrupted, will process last message if already received"
               rescue Object=>exception
@@ -182,16 +183,17 @@ module ActiveMessaging
       end
 
       def prepare_application
-        Dispatcher.prepare_application_for_dispatch
+        #Dispatcher.prepare_application_for_dispatch
       end
 
       def reset_application
-        Dispatcher.reset_application_after_dispatch
+        #Dispatcher.reset_application_after_dispatch
       end
       
       def dispatch(message)
         @@guard.synchronize {
           begin
+            puts "Dispatching for message"
             prepare_application
             _dispatch(message)
           rescue Object => exc
@@ -212,7 +214,9 @@ module ActiveMessaging
           abort = false
           processed = false
 
-          subscriptions.each do |key, subscription| 
+          subscriptions.each do |key, subscription|
+            puts "Subscription: #{subscription.inspect}"
+            puts "Message: #{message.inspect}"
             if subscription.matches?(message) then
               processed = true
               routing = {
@@ -221,6 +225,7 @@ module ActiveMessaging
                 :direction => :incoming
               }
               begin
+                puts "message: #{message.inspect}"
                 execute_filter_chain(:incoming, message, routing) do |m|
                   result = subscription.processor_class.new.process!(m)
                 end
@@ -353,7 +358,7 @@ module ActiveMessaging
       end
       
       def load_connection_configuration(label='default')
-        @broker_yml = YAML.load_file(File.join(RAILS_ROOT, 'config', 'broker.yml')) if @broker_yml.nil?
+        @broker_yml = YAML.load_file(File.join((APP_ROOT rescue Merb.root), 'config', 'broker.yml')) if @broker_yml.nil?
         if label == 'default'
           config = @broker_yml[Merb.environment].symbolize_keys
         else
