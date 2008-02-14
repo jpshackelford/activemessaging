@@ -32,7 +32,6 @@ module ActiveMessaging
               begin
                 Thread.current[:message] = nil
                 Thread.current[:message] = conn.receive
-                puts "Receiving message #{Thread.current[:message]}"
               rescue StopProcessingException
                 ActiveMessaging.logger.error "ActiveMessaging: thread[#{name}]: Processing Stopped - receive interrupted, will process last message if already received"
               rescue Object=>exception
@@ -193,7 +192,6 @@ module ActiveMessaging
       def dispatch(message)
         @@guard.synchronize {
           begin
-            puts "Dispatching for message"
             prepare_application
             _dispatch(message)
           rescue Object => exc
@@ -215,8 +213,6 @@ module ActiveMessaging
           processed = false
 
           subscriptions.each do |key, subscription|
-            puts "Subscription: #{subscription.inspect}"
-            puts "Message: #{message.inspect}"
             if subscription.matches?(message) then
               processed = true
               routing = {
@@ -225,7 +221,6 @@ module ActiveMessaging
                 :direction => :incoming
               }
               begin
-                puts "message: #{message.inspect}"
                 execute_filter_chain(:incoming, message, routing) do |m|
                   result = subscription.processor_class.new.process!(m)
                 end

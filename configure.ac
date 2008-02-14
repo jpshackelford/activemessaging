@@ -3,7 +3,7 @@ dnl - It should be specified as major.minor.revision [1.3.0]
 dnl - The third argument, should be replaced with the package 
 dnl - maintainers email address.
 
-AC_INIT([rubygem_activemessaging], [0.5.0], [cliff@powerset.com])
+AC_INIT([rubygem_activemessaging], [0.5.1], [cliff@powerset.com])
 SHORT_DESCRIPTION="A short description of the package"
 
 dnl - The following prerequisites line can be used to specify
