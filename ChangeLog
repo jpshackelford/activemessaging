@@ -1,3 +1,6 @@
+Version 0.5.2 (cliff)
+  * Client-id for durable subscriptions.
+
 Version 0.5.1 (cliff)
   * Removing silly debugging.
 

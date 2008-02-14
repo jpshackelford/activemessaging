@@ -22,7 +22,7 @@ module ActiveMessaging
           cfg[:reliable] ||= TRUE
           cfg[:reconnectDelay] ||= 5
           cfg[:clientId] ||= nil
-          super(cfg[:login],cfg[:passcode],cfg[:host],cfg[:port].to_i,cfg[:reliable],cfg[:reconnectDelay])
+          super(cfg[:login],cfg[:passcode],cfg[:host],cfg[:port].to_i,cfg[:reliable],cfg[:reconnectDelay],cfg[:cientId])
         end
         
         def received message, headers={}
