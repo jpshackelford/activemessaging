@@ -102,9 +102,12 @@ module ActiveMessaging
         disconnect
       end
       
-      def connection broker_name='default'
+      def connection broker_name='default', clientId=nil
         return @@connections[broker_name] if @@connections.has_key?(broker_name)
         config = load_connection_configuration(broker_name)
+        if clientId
+          config[:clientId] = clientId
+        end
         @@connections[broker_name] = Gateway.adapters[config[:adapter]].new(config)
       end
 
@@ -374,6 +377,9 @@ module ActiveMessaging
     def initialize(destination, processor_class, subscribe_headers = {})
       @destination, @processor_class, @subscribe_headers = destination, processor_class, subscribe_headers
       subscribe_headers['id'] = processor_class.name.underscore unless subscribe_headers.key? 'id'
+      if subscribe_headers[:clientId]
+        clientId = subscribe_headers.delete(:clientId)
+      end
     end
     
     def matches?(message)

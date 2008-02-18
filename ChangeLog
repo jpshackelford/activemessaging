@@ -1,3 +1,6 @@
+Version 0.5.4 (cliff)
+  * Ability to pass in client ID in subscription
+
 Version 0.5.3 (cliff)
   * Fixed typo in client id config.
 
