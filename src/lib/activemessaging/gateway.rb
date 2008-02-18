@@ -378,7 +378,7 @@ module ActiveMessaging
       @destination, @processor_class, @subscribe_headers = destination, processor_class, subscribe_headers
       subscribe_headers['id'] = processor_class.name.underscore unless subscribe_headers.key? 'id'
       if subscribe_headers[:clientId]
-        clientId = subscribe_headers.delete(:clientId)
+        @clientId = subscribe_headers.delete(:clientId)
       end
     end
     
@@ -388,7 +388,7 @@ module ActiveMessaging
     
     def subscribe
       ActiveMessaging.logger.error "=> Subscribing to #{destination.value} (processed by #{processor_class})"
-      Gateway.connection(@destination.broker_name).subscribe(@destination.value, subscribe_headers) 
+      Gateway.connection(@destination.broker_name, @clientId).subscribe(@destination.value, subscribe_headers) 
     end
 
     def unsubscribe

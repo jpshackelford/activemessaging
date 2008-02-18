@@ -1,3 +1,6 @@
+Version 0.5.5 (cliff)
+  * bugfix to subscription headers
+
 Version 0.5.4 (cliff)
   * Ability to pass in client ID in subscription
 
