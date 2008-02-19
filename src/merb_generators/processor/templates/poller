@@ -1,19 +1,12 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require 'daemons'
-require 'merb'
 require 'activesupport'
 require 'activemessaging'
 
 APP_ROOT = File.expand_path(File.dirname(__FILE__) + '/..')
-MERB_ROOT = APP_ROOT
-MERB_ENV = ENV['MERB_ENV']
 tmp_dir = File.join(File.expand_path(APP_ROOT), 'log')
 script_file = File.join(File.dirname(__FILE__)+'/../lib/poller.rb')
-
-# Load Merb
-require File.expand_path(File.dirname(__FILE__)+'/../config/boot')
-require File.expand_path(File.dirname(__FILE__)+'/../config/merb_init')
 
 options = {
   :app_name   => "poller",

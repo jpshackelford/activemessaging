@@ -89,7 +89,7 @@ class TraceProcessor < ActiveMessaging::Processor
 
   def create_image
     File.open(DOT_FILE, "w") {|f| f.puts @@dot.to_s }
-    output_file = Merb.root + "/public/trace.png"
+    output_file = A13G.root + "/public/trace.png"
     `dot -Tpng -o #{output_file} #{DOT_FILE}`
   end
 

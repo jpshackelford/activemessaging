@@ -1,3 +1,6 @@
+Version 0.5.6 (cliff)
+  * Decoupling with merb to make back compatible with rails
+
 Version 0.5.5 (cliff)
   * bugfix to subscription headers
 

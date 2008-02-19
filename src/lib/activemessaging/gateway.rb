@@ -241,6 +241,7 @@ module ActiveMessaging
         else 
           ActiveMessaging.logger.error('Unknown message command: ' + message.inspect)
         end
+        GC.start
       end
 
       # acknowledge_message is called when the message has been processed w/o error by at least one processor
@@ -356,11 +357,11 @@ module ActiveMessaging
       end
       
       def load_connection_configuration(label='default')
-        @broker_yml = YAML.load_file(File.join((APP_ROOT rescue Merb.root), 'config', 'broker.yml')) if @broker_yml.nil?
+        @broker_yml = YAML.load_file(File.join(A13G.root, 'config', 'broker.yml')) if @broker_yml.nil?
         if label == 'default'
-          config = @broker_yml[Merb.environment].symbolize_keys
+          config = @broker_yml[A13G.environment].symbolize_keys
         else
-          config = @broker_yml[Merb.environment][label].symbolize_keys
+          config = @broker_yml[A13G.environment][label].symbolize_keys
         end
         config[:adapter] = config[:adapter].to_sym if config[:adapter]
         config[:adapter] ||= :stomp

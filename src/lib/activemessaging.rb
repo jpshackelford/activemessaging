@@ -18,10 +18,23 @@ module ActiveMessaging
   class StopFilterException < Exception #:nodoc:
   end
 
+  def ActiveMessaging.configure(options={})
+    options.each do |key, val|
+      class_variable_set("@@#{key}", val)
+    end
+  end
+
   def ActiveMessaging.logger
-    @@logger = Merb.logger unless defined?(@@logger)
     @@logger = Logger.new(STDOUT) unless defined?(@@logger)
     @@logger
+  end
+  
+  def ActiveMessaging.root
+    @@root
+  end
+  
+  def ActiveMessaging.environment
+    @@environment
   end
 
   # DEPRECATED, so I understand, but I'm using it nicely below.
@@ -48,7 +61,7 @@ module ActiveMessaging
   end
 
   def self.load_config
-    path = File.expand_path("#{Merb.root}/config/messaging.rb")
+    path = File.expand_path("#{A13G.root}/config/messaging.rb")
     begin
       load path
     rescue LoadError
@@ -61,12 +74,9 @@ module ActiveMessaging
   def self.load_processors(first=true)
     #Load the parent processor.rb, then all child processor classes
     begin
-      load Merb.root + '/vendor/plugins/activemessaging/lib/activemessaging/processor.rb' unless defined?(ActiveMessaging::Processor)
-      load Merb.root + '/vendor/plugins/activemessaging/lib/activemessaging/message_sender.rb' unless defined?(ActiveMessaging::MessageSender)
-      load Merb.root + '/vendor/plugins/activemessaging/lib/activemessaging/filter.rb' unless defined?(ActiveMessaging::Filter)
-      logger.debug "ActiveMessaging: Loading #{Merb.root + '/app/processors/application.rb'}" if first
-      load Merb.root + '/app/processors/application.rb'
-      Dir[Merb.root + '/app/processors/*.rb'].each do |f|
+      logger.debug "ActiveMessaging: Loading #{A13G.root + '/app/processors/application.rb'}" if first
+      load A13G.root + '/app/processors/application.rb'
+      Dir[A13G.root + '/app/processors/*.rb'].each do |f|
         unless f.match(/\/application.rb/)
           logger.debug "ActiveMessaging: Loading #{f}" if first
           load f
@@ -116,9 +126,11 @@ EOM
 
 end
 
-#load these once to start with
-ActiveMessaging.load_activemessaging
+#Do not auto-load a13g.  We need to grab configuration from the client code
+#ActiveMessaging.load_activemessaging
 
+#Save typing yo
+A13G = ActiveMessaging
 
 # reload these on each request - leveraging Dispatcher semantics for consistency
 # require 'dispatcher' unless defined?(::Dispatcher)
