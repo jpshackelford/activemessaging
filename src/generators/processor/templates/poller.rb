@@ -9,8 +9,9 @@ begin
   require File.expand_path(File.dirname(__FILE__)+'/../config/merb_init')
 rescue LoadError
   # Load Rails
-  RAILS_ROOT=File.expand_path(File.join(File.dirname(__FILE__), '..','..','..'))
-  load File.join(RAILS_ROOT, 'config', 'environment.rb')
+  RAILS_ROOT=File.expand_path(File.join(File.dirname(__FILE__), '..'))
+  require File.join(RAILS_ROOT, 'config', 'boot')
+  require File.join(RAILS_ROOT, 'config', 'environment')
 end
 
 # Load ActiveMessaging processors
