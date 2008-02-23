@@ -384,7 +384,15 @@ module ActiveMessaging
     end
     
     def matches?(message)
-      message.headers['destination'].to_s == @destination.value.to_s
+      dest = @destination.value.to_s
+      if dest =~ /VirtualTopic\.(.*)/
+        real_dest = $1
+        if message.headers['destination'].to_s =~ /VirtualTopic\.(.*)/
+          return real_dest == $1
+        end
+      else
+        message.headers['destination'].to_s == @destination.value.to_s
+      end
     end
     
     def subscribe

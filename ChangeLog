@@ -1,3 +1,6 @@
+Version 0.5.7 (cliff)
+  * Support for virtual destinations.
+
 Version 0.5.6 (cliff)
   * Decoupling with merb to make back compatible with rails
 
