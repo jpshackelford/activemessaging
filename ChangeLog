@@ -1,3 +1,6 @@
+Version 0.5.8 (cliff)
+  * Processors stick around between messages.
+
 Version 0.5.7 (cliff)
   * Support for virtual destinations.
 

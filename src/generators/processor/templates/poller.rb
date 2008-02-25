@@ -6,6 +6,8 @@ STDERR.sync = true; STDERR.flush
 #Try to Load Merb
 begin
   require File.expand_path(File.dirname(__FILE__)+'/../config/boot')
+  #need this because of the CWD
+  Merb.root = MERB_ROOT
   require File.expand_path(File.dirname(__FILE__)+'/../config/merb_init')
 rescue LoadError
   # Load Rails

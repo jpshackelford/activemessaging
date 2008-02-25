@@ -225,7 +225,7 @@ module ActiveMessaging
               }
               begin
                 execute_filter_chain(:incoming, message, routing) do |m|
-                  result = subscription.processor_class.new.process!(m)
+                  result = subscription.processor.process!(m)
                 end
               rescue ActiveMessaging::AbortMessageException
                 abort_message subscription, message
@@ -241,7 +241,8 @@ module ActiveMessaging
         else 
           ActiveMessaging.logger.error('Unknown message command: ' + message.inspect)
         end
-        GC.start
+        #Persistent processors seem to solve some of the memory issues
+        #GC.start
       end
 
       # acknowledge_message is called when the message has been processed w/o error by at least one processor
@@ -373,7 +374,7 @@ module ActiveMessaging
   end
 
   class Subscription
-    attr_accessor :destination, :processor_class, :subscribe_headers
+    attr_accessor :destination, :processor_class, :subscribe_headers, :processor
         
     def initialize(destination, processor_class, subscribe_headers = {})
       @destination, @processor_class, @subscribe_headers = destination, processor_class, subscribe_headers
@@ -381,6 +382,7 @@ module ActiveMessaging
       if subscribe_headers[:clientId]
         @clientId = subscribe_headers.delete(:clientId)
       end
+      @processor = @processor_class.new
     end
     
     def matches?(message)
