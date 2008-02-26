@@ -382,7 +382,7 @@ module ActiveMessaging
       if subscribe_headers[:clientId]
         @clientId = subscribe_headers.delete(:clientId)
       end
-      @processor = @processor_class.new
+      
     end
     
     def matches?(message)
@@ -399,7 +399,9 @@ module ActiveMessaging
     
     def subscribe
       ActiveMessaging.logger.error "=> Subscribing to #{destination.value} (processed by #{processor_class})"
-      Gateway.connection(@destination.broker_name, @clientId).subscribe(@destination.value, subscribe_headers) 
+      Gateway.connection(@destination.broker_name, @clientId).subscribe(@destination.value, subscribe_headers)
+      #needs to happen here for some fucking reason
+      @processor = @processor_class.new
     end
 
     def unsubscribe

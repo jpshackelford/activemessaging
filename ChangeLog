@@ -1,3 +1,6 @@
+Version 0.5.9 (cliff)
+  * Processor instantiation bugfix
+
 Version 0.5.8 (cliff)
   * Processors stick around between messages.
 
