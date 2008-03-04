@@ -3,7 +3,7 @@ dnl - It should be specified as major.minor.revision [1.3.0]
 dnl - The third argument, should be replaced with the package 
 dnl - maintainers email address.
 
-AC_INIT([rubygem_activemessaging], [0.5.9], [cliff@powerset.com])
+AC_INIT([rubygem_activemessaging], [0.5.10], [cliff@powerset.com])
 SHORT_DESCRIPTION="A short description of the package"
 
 dnl - The following prerequisites line can be used to specify
@@ -16,7 +16,7 @@ dnl - The following prerequisites line can be used to specify
 dnl - the exact, or minimum, versions of packages on which this
 dnl - package will depend (for build only)
 
-BUILD_PREREQUISITES="rubygem_power_hoe"
+BUILD_PREREQUISITES="rubygem_power_hoe rubygem_common_pool"
 
 
 dnl -- [ end basic configuration ]

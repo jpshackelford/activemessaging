@@ -1,5 +1,7 @@
 $:.unshift File.dirname(__FILE__)
 
+require 'common_pool'
+
 module ActiveMessaging
 
   VERSION = "0.5" #maybe this should be higher, but I'll let others judge :)
@@ -42,6 +44,7 @@ module ActiveMessaging
     require 'logger'
     require 'activemessaging/support'
     require 'activemessaging/gateway'
+    require 'activemessaging/connection_manager'
     require 'activemessaging/adapter'
     require 'activemessaging/message_sender'
     require 'activemessaging/processor'
@@ -91,6 +94,7 @@ module ActiveMessaging
     ActiveMessaging::Gateway.filters = []
     ActiveMessaging::Gateway.named_destinations = {}
     ActiveMessaging::Gateway.processor_groups = {}
+    ActiveMessaging::Gateway.conn_mgr = nil
 
     # now load the config
     load_config
@@ -101,6 +105,7 @@ module ActiveMessaging
     load_extensions
     load_config
     load_processors
+    A13G::Gateway.create_connection_manager
   end
 
   def self.start

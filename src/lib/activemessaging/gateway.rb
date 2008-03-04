@@ -3,12 +3,11 @@ require 'yaml'
 module ActiveMessaging
 
   class Gateway
-    cattr_accessor :adapters, :subscriptions, :named_destinations, :filters, :processor_groups, :connections
+    cattr_accessor :adapters, :subscriptions, :named_destinations, :filters, :processor_groups, :conn_mgr
     @@adapters = {}
     @@subscriptions = {}
     @@named_destinations = {}
     @@filters = []
-    @@connections = {}
     @@processor_groups = {}
     @@current_processor_group = nil
 
@@ -25,8 +24,8 @@ module ActiveMessaging
         # subscribe - creating connections along the way
         subscribe
 
-        # for each conection, start a thread
-        @@connections.each do |name, conn|
+        # for each broker start a thread
+        Gateway.conn_mgr.connections do |name, conn|
           @@connection_threads[name] = Thread.start do
             while @@running
               begin
@@ -102,13 +101,9 @@ module ActiveMessaging
         disconnect
       end
       
-      def connection broker_name='default', clientId=nil
-        return @@connections[broker_name] if @@connections.has_key?(broker_name)
-        config = load_connection_configuration(broker_name)
-        if clientId
-          config[:clientId] = clientId
-        end
-        @@connections[broker_name] = Gateway.adapters[config[:adapter]].new(config)
+      def create_connection_manager
+        A13G.logger.debug("creating conn mgr")
+        Gateway.conn_mgr = ConnectionManager.new
       end
 
       def register_adapter adapter_name, adapter_class
@@ -129,8 +124,7 @@ module ActiveMessaging
       end
 
       def disconnect
-        @@connections.each { |key,connection| connection.disconnect }
-        @@connections = {}
+        Gateway.conn_mgr.disconnect
       end
 
       def execute_filter_chain(direction, message, details={})
@@ -247,13 +241,17 @@ module ActiveMessaging
 
       # acknowledge_message is called when the message has been processed w/o error by at least one processor
       def acknowledge_message subscription, message
-        connection(subscription.destination.broker_name).received message, subscription.subscribe_headers
+        Gateway.conn_mgr.connection(subscription.destination.broker_name) do |conn|
+          conn.received message, subscription.subscribe_headers
+        end
       end
 
       # abort_message is called when procesing the message raises a ActiveMessaging::AbortMessageException
       # indicating the message should be returned to the destination so it can be tried again, later
       def abort_message subscription, message
-        connection(subscription.destination.broker_name).unreceive message, subscription.subscribe_headers
+        Gateway.conn_mgr.connection(subscription.destination.broker_name) do |conn|
+          conn.unreceive message, subscription.subscribe_headers
+        end
       end
 
       def define
@@ -298,7 +296,9 @@ module ActiveMessaging
         begin
           Timeout.timeout timeout do
             execute_filter_chain(:outgoing, message, details) do |message|
-              connection(real_destination.broker_name).send real_destination.value, message.body, message.headers
+              Gateway.conn_mgr.connection(real_destination.broker_name) do |conn|
+                conn.send real_destination.value, message.body, message.headers
+              end
             end
           end
         rescue Timeout::Error=>toe
@@ -357,17 +357,7 @@ module ActiveMessaging
         @@current_processor_group
       end
       
-      def load_connection_configuration(label='default')
-        @broker_yml = YAML.load_file(File.join(A13G.root, 'config', 'broker.yml')) if @broker_yml.nil?
-        if label == 'default'
-          config = @broker_yml[A13G.environment].symbolize_keys
-        else
-          config = @broker_yml[A13G.environment][label].symbolize_keys
-        end
-        config[:adapter] = config[:adapter].to_sym if config[:adapter]
-        config[:adapter] ||= :stomp
-        return config
-      end
+      
       
     end
 
@@ -399,14 +389,18 @@ module ActiveMessaging
     
     def subscribe
       ActiveMessaging.logger.error "=> Subscribing to #{destination.value} (processed by #{processor_class})"
-      Gateway.connection(@destination.broker_name, @clientId).subscribe(@destination.value, subscribe_headers)
+      Gateway.conn_mgr.connection(@destination.broker_name) do |conn|
+        conn.subscribe(@destination.value, subscribe_headers)
+      end
       #needs to happen here for some fucking reason
       @processor = @processor_class.new
     end
 
     def unsubscribe
       ActiveMessaging.logger.error "=> Unsubscribing from #{destination.value} (processed by #{processor_class})"
-      Gateway.connection(destination.broker_name).unsubscribe(destination.value, subscribe_headers)
+      Gateway.conn_mgr.connection(destination.broker_name) do |conn|
+        conn.unsubscribe(destination.value, subscribe_headers)
+      end
     end
   end
 
