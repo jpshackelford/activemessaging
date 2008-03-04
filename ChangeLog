@@ -1,3 +1,6 @@
+Version 0.5.11 (cliff)
+  * fixed a dependency
+
 Version 0.5.10 (cliff)
   * Connection pooling
 
