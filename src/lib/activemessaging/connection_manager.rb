@@ -34,7 +34,7 @@ module ActiveMessaging
     def connection(broker_name)
       begin
         conn = lease_connection(broker_name)
-      rescue CommonPoolError
+      rescue CommonPool::CommonPoolError
         A13G.logger.warn("Contending for connection")
         sleep(0.001)
         retry
