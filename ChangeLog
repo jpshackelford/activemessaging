@@ -1,3 +1,6 @@
+Version 0.5.13 (cliff)
+  * acknowledgement using the same connection
+
 Version 0.5.12 (cliff)
   * bug in pool handling
 

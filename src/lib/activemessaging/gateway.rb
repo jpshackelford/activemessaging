@@ -27,6 +27,8 @@ module ActiveMessaging
         # for each broker start a thread
         Gateway.conn_mgr.connections do |name, conn|
           @@connection_threads[name] = Thread.start do
+            #necessary for ack/unack.  They need to happen on the same conn as receipt
+            Thread.current[:connection] = conn
             while @@running
               begin
                 Thread.current[:message] = nil
@@ -241,17 +243,17 @@ module ActiveMessaging
 
       # acknowledge_message is called when the message has been processed w/o error by at least one processor
       def acknowledge_message subscription, message
-        Gateway.conn_mgr.connection(subscription.destination.broker_name) do |conn|
-          conn.received message, subscription.subscribe_headers
-        end
+        # Gateway.conn_mgr.connection(subscription.destination.broker_name) do |conn|
+        Thread.current[:connection].received message, subscription.subscribe_headers
+        # end
       end
 
       # abort_message is called when procesing the message raises a ActiveMessaging::AbortMessageException
       # indicating the message should be returned to the destination so it can be tried again, later
       def abort_message subscription, message
-        Gateway.conn_mgr.connection(subscription.destination.broker_name) do |conn|
-          conn.unreceive message, subscription.subscribe_headers
-        end
+        # Gateway.conn_mgr.connection(subscription.destination.broker_name) do |conn|
+        Thread.current[:connection].unreceive message, subscription.subscribe_headers
+        # end
       end
 
       def define
