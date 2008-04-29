@@ -1,3 +1,6 @@
+Version 0.5.14 (cliff)
+  * discard redelivered messages
+
 Version 0.5.13 (cliff)
   * acknowledgement using the same connection
 

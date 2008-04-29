@@ -33,6 +33,10 @@ module ActiveMessaging
               begin
                 Thread.current[:message] = nil
                 Thread.current[:message] = conn.receive
+                if Thread.current[:message].headers["redelivered"] == "true"
+                  A13G.logger.warn("Redelivered message.")
+                  Thread.current[:message]= nil
+                end
               rescue StopProcessingException
                 ActiveMessaging.logger.error "ActiveMessaging: thread[#{name}]: Processing Stopped - receive interrupted, will process last message if already received"
               rescue Object=>exception
