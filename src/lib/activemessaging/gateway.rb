@@ -385,11 +385,11 @@ module ActiveMessaging
       dest = @destination.value.to_s
       if dest =~ /VirtualTopic\.(.*)/
         real_dest = $1
-        if message.headers['destination'].to_s =~ /VirtualTopic\.(.*)/
+        if message.headers[:destination].to_s =~ /VirtualTopic\.(.*)/
           return real_dest == $1
         end
       else
-        message.headers['destination'].to_s == @destination.value.to_s
+        message.headers[:destination].to_s == @destination.value.to_s
       end
     end
     
@@ -404,9 +404,9 @@ module ActiveMessaging
 
     def unsubscribe
       ActiveMessaging.logger.error "=> Unsubscribing from #{destination.value} (processed by #{processor_class})"
-      Gateway.conn_mgr.connection(destination.broker_name) do |conn|
-        conn.unsubscribe(destination.value, subscribe_headers)
-      end
+      # Gateway.conn_mgr.connection(destination.broker_name) do |conn|
+        Thread.current[:connection].unsubscribe(destination.value, subscribe_headers) if Thread.current[:connection]
+      # end
     end
   end
 

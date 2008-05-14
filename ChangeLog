@@ -1,3 +1,6 @@
+Version 0.5.15 (cliff)
+  * amqp adapter
+
 Version 0.5.14 (cliff)
   * discard redelivered messages
 
