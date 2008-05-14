@@ -288,7 +288,7 @@ module ActiveMessaging
         end
       end
 
-      def publish destination_name, body, publisher=nil, headers={}, timeout=10
+      def publish destination_name, body, publisher=nil, headers={}, timeout=1
         raise "You cannot have a nil or empty destination name." if destination_name.nil?
         raise "You cannot have a nil or empty message body." if (body.nil? || body.empty?)
         
@@ -309,7 +309,6 @@ module ActiveMessaging
           end
         rescue Timeout::Error=>toe
           ActiveMessaging.logger.error("Timed out trying to send the message #{message} to destination #{destination_name} via broker #{real_destination.broker_name}")
-          raise toe
         end
       end
       
