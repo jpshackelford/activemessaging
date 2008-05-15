@@ -31,16 +31,19 @@ module ActiveMessaging
             Thread.current[:connection] = conn
             while @@running
               begin
+                subscribe if @retry_subscriptions
                 Thread.current[:message] = nil
                 Thread.current[:message] = conn.receive
                 if Thread.current[:message].headers["redelivered"] == "true"
                   A13G.logger.warn("Redelivered message.")
                   Thread.current[:message]= nil
                 end
+                @retry_subscriptions = false
               rescue StopProcessingException
                 ActiveMessaging.logger.error "ActiveMessaging: thread[#{name}]: Processing Stopped - receive interrupted, will process last message if already received"
               rescue Object=>exception
                 ActiveMessaging.logger.error "ActiveMessaging: thread[#{name}]: Exception from connection.receive: #{exception.message}\n" + exception.backtrace.join("\n\t")
+                @retry_subscriptions = true
               ensure
                 dispatch Thread.current[:message] if Thread.current[:message]
                 Thread.current[:message] = nil
