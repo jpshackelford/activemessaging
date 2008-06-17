@@ -1,0 +1,56 @@
+==  0.6.0 (jpshackelford)
+  * Changed build infrastructure to use Dr. Bones
+
+==  0.5.17 (cliff)
+  * robustifying the amqp adapter
+
+==  0.5.16 (cliff)
+  * fixing freaking publishing timeouts
+
+==  0.5.15 (cliff)
+  * amqp adapter
+
+==  0.5.14 (cliff)
+  * discard redelivered messages
+
+==  0.5.13 (cliff)
+  * acknowledgement using the same connection
+
+==  0.5.12 (cliff)
+  * bug in pool handling
+
+==  0.5.11 (cliff)
+  * fixed a dependency
+
+==  0.5.10 (cliff)
+  * Connection pooling
+
+==  0.5.9 (cliff)
+  * Processor instantiation bugfix
+
+==  0.5.8 (cliff)
+  * Processors stick around between messages.
+
+==  0.5.7 (cliff)
+  * Support for virtual destinations.
+
+==  0.5.6 (cliff)
+  * Decoupling with merb to make back compatible with rails
+
+==  0.5.5 (cliff)
+  * bugfix to subscription headers
+
+==  0.5.4 (cliff)
+  * Ability to pass in client ID in subscription
+
+==  0.5.3 (cliff)
+  * Fixed typo in client id config.
+
+==  0.5.2 (cliff)
+  * Client-id for durable subscriptions.
+
+==  0.5.1 (cliff)
+  * Removing silly debugging.
+
+==  0.5.0 (cliff)
+  * First commit
