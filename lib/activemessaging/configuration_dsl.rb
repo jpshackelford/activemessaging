@@ -1,0 +1,2 @@
+class ConfigurationDSL
+end

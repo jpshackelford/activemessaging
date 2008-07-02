@@ -23,7 +23,7 @@ PROJ = OpenStruct.new(
   :email => 'jpshack@gmail.com',
   :url => "\000",
   :version => ENV['VERSION'] || '0.6.0',
-  :exclude => %w(tmp$ bak$ ~$ CVS .svn/ ^pkg/),
+  :exclude => %w(tmp$ bak$ ~$ CVS .svn/ .git/ ^pkg/ ^queues/ uuid.state),
   :release_name => ENV['RELEASE'],
 
   # System Defaults
@@ -53,7 +53,7 @@ PROJ = OpenStruct.new(
   # Gem Packaging
   :gem => OpenStruct.new(
     :dependencies => [],
-    :executables => nil,
+    :executables => ['am-poller'],
     :extensions => FileList['ext/**/extconf.rb'],
     :files => nil,
     :need_tar => false,
@@ -78,9 +78,9 @@ PROJ = OpenStruct.new(
 
   # Rdoc
   :rdoc => OpenStruct.new(
-    :opts => [],
-    :include => %w(^lib/ ^bin/ ^ext/ .txt$),
-    :exclude => %w(extconf.rb$),
+    :opts => ['--inline-source', '--line-numbers', '--merge'],
+    :include => %w(^lib/ ^ext/ .txt$),
+    :exclude => %w(adapters/ extconf.rb$),
     :main => nil,
     :dir => 'doc',
     :remote_dir => nil

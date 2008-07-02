@@ -1,4 +1,4 @@
-# $Id$
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib activemessaging]))
 
 require File.expand_path(
     File.join(File.dirname(__FILE__), %w[.. lib ActiveMessaging]))
@@ -14,4 +14,21 @@ Spec::Runner.configure do |config|
   # config.mock_with :rr
 end
 
-# EOF
+module FixtureSupport
+  
+  # return the contents of a fixture file.
+  def fixture(file)
+    File.open(fixture_path(file),'rb'){|f| f.read}
+  end
+  
+  def fixture_path(filename)
+    return File.join(File.dirname(__FILE__), '..', 'fixtures', filename)
+  end
+    
+  # return a REMXML document for a fixture file.
+  def xml_fixture(file)
+    return REXML::Document.new(fixture(file))
+  end
+end
+
+include FixtureSupport  
