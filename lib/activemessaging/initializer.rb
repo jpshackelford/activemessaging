@@ -237,6 +237,7 @@ module ActiveMessaging
       # Assign the SystemGlobals object to ActiveMessaging::System
       Kernel.silence_warnings do
         ActiveMessaging.const_set(:System, @system.freeze)
+        ActiveMessaging.const_set(:LOG, @system.logger)
       end      
       # Free up memory so that the initializer 
       # can be garbage collected.  

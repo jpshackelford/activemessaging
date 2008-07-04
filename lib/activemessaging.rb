@@ -2,6 +2,7 @@ $:.unshift File.dirname(__FILE__)
 
 require 'logger'
 require 'yaml'
+require 'ostruct'
 
 require 'rubygems'
 require 'common_pool'
@@ -20,7 +21,7 @@ require 'activemessaging/poller'
 require 'activemessaging/destination_registry'
 require 'activemessaging/processor_pool'
 
-require 'activemessaging/gateway'
+require 'activemessaging/gateway~'
 require 'activemessaging/connection_manager'
 require 'activemessaging/adapter'
 require 'activemessaging/message_sender'

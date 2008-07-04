@@ -27,10 +27,7 @@ module ActiveMessaging
         @logger.debug "Initializing object for [#{section}]."
         @objects[section] = safe_init(klass) || safe_init(default[section])
       end
-    end
-    
-    def configure( config )    
-    end
+    end  
     
     def method_missing( method , *args)
       if @objects[method]

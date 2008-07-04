@@ -1,4 +1,6 @@
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib activemessaging]))
 require 'test/unit'
+
 #require "#{File.dirname(__FILE__)}/trace_filter"
 
 
