@@ -8,6 +8,8 @@ rescue Object => e
 end
 if loaded 
 
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib activemessaging adapters reliable_msg]))
+
 class ReliableMsgTest < Test::Unit::TestCase
 
   def setup

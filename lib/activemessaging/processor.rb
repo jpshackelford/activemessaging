@@ -1,7 +1,7 @@
 # 'abstract' base class for ActiveMessaging processor classes
 module ActiveMessaging
 
-  class Processor
+  class BaseProcessor
     include MessageSender
     
     attr_reader :message
@@ -40,6 +40,9 @@ module ActiveMessaging
         logger.error "Processor:process! - error in on_error, will propagate no further: #{ex.message}"
       end
     end
-
   end
+  
+  # alias for compatibility
+  Processor = BaseProcessor
+  
 end

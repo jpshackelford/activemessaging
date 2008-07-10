@@ -1,5 +1,13 @@
 $:.unshift File.dirname(__FILE__)
 
+
+require 'thread'
+begin
+  require 'fastthread'
+rescue LoadError
+end
+
+require 'monitor'
 require 'logger'
 require 'yaml'
 require 'ostruct'
@@ -9,13 +17,16 @@ require 'common_pool'
 require 'activesupport'
 require 'rubigen'
 
-require 'activemessaging/hash'
 require 'activemessaging/support'
 require 'activemessaging/null_logger'
-require 'activemessaging/object_bank'
-require 'activemessaging/configuration_dsl'
+
+require 'activemessaging/base_registry'
+require 'activemessaging/broker_registry'
+require 'activemessaging/destination_registry'
+require 'activemessaging/subscription_registry'
+require 'activemessaging/processor_registry'
+
 require 'activemessaging/system_globals'
-require 'activemessaging/initializer'
 
 require 'activemessaging/poller'
 require 'activemessaging/destination_registry'
@@ -51,4 +62,8 @@ module ActiveMessaging
   class BadConfigurationException < Exception      
   end
   
+  Kernel.silence_warnings do
+    ActiveMessaging.const_set(:System, SystemGlobals.new)
+  end
+
 end
