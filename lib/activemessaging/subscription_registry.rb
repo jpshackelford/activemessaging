@@ -3,7 +3,7 @@ module ActiveMessaging
   class SubscriptionRegistry < BaseRegistry
     
     def initialize( destination_registry, processor_registry )
-      super
+      super()
       @destination_registry = destination_registry
       @processor_registry   = processor_registry
     end
@@ -44,8 +44,22 @@ module ActiveMessaging
       end # case command
     end # def update
         
-    def create_item(*args)
-      Subscription.new( destination, processor )
+    def create_item( *args )
+      Subscription.new( *args )
+    end
+    
+    def broker_names
+      brokers.map{|b| b.to_sym}
+    end
+    
+    def brokers
+      @registry.values.map{|s| s.broker}.uniq
+    end
+    
+
+    def processors_for( message )
+      @registry.values.select{|s| message.route_to?(s.destination)}.
+        map{|s| s.processor}.uniq
     end
     
   end
@@ -64,9 +78,13 @@ module ActiveMessaging
       "#{@destination.name}_#{@processor.name}".to_sym
     end
     
-    # convenience method
+    # convenience methods
     def broker
       @destination.broker
+    end
+    
+    def to_s
+      "Subscription(:#{name})"
     end
     
   end

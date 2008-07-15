@@ -27,7 +27,7 @@ PROJ = OpenStruct.new(
   :release_name => ENV['RELEASE'],
 
   # System Defaults
-  :ruby_opts => %w(-w),
+  :ruby_opts => [], #%w(-w),
   :libs => [],
   :history_file => 'History.txt',
   :manifest_file => 'Manifest.txt',
@@ -108,7 +108,8 @@ PROJ = OpenStruct.new(
 
   # Test::Unit
   :test => OpenStruct.new(
-    :files => FileList['test/**/*_test.rb'],
+    :files => FileList['test/unit/**/*_test.rb', 
+                       'test/integration/**/*_test.rb'],
     :file  => 'test/all.rb',
     :opts  => []
   )

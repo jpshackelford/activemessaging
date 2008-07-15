@@ -7,6 +7,7 @@ class MockProcessor
     @expected_message = message
     @expected_headers = headers
     @expected_count   = count
+    self
   end
   
   def process!(message)
@@ -15,9 +16,10 @@ class MockProcessor
   end
   
   def verify!
-    assert_equal @expected_message, @received_message, "Message body garbled."
     assert_equal @expected_count, @call_count, 
       "#process! was called too few or too many times." 
+    assert_not_nil @received_message, "Did not receive a message."
+    assert_equal @expected_message, @received_message, "Message body garbled."
     # TODO verify headers
   end
   
@@ -26,5 +28,9 @@ class MockProcessor
     @call_count = 0
     self
   end
+  
+  def name
+    self.class.name
+  end  
   
 end

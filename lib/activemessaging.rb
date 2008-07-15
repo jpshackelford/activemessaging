@@ -1,44 +1,44 @@
 $:.unshift File.dirname(__FILE__)
 
-
+# threading library
 require 'thread'
 begin
   require 'fastthread'
 rescue LoadError
 end
 
-require 'monitor'
+# stdlib
 require 'logger'
-require 'yaml'
+require 'monitor'
 require 'ostruct'
+require 'yaml'
 
+# rubygems
 require 'rubygems'
 require 'common_pool'
 require 'activesupport'
 require 'rubigen'
 
-require 'activemessaging/support'
-require 'activemessaging/null_logger'
-
+# ActiveMessaging
+require 'activemessaging/base_iterator'
+require 'activemessaging/base_message'
 require 'activemessaging/base_registry'
 require 'activemessaging/broker_registry'
+require 'activemessaging/custom_class_registry'
 require 'activemessaging/destination_registry'
-require 'activemessaging/subscription_registry'
-require 'activemessaging/processor_registry'
-
-require 'activemessaging/system_globals'
-
-require 'activemessaging/poller'
-require 'activemessaging/destination_registry'
-require 'activemessaging/processor_pool'
-
-require 'activemessaging/gateway~'
-require 'activemessaging/connection_manager'
-require 'activemessaging/adapter'
+require 'activemessaging/gateway'
 require 'activemessaging/message_sender'
+require 'activemessaging/poller'
+require 'activemessaging/poller_thread'
+require 'activemessaging/poller_thread_pool'
 require 'activemessaging/processor'
-require 'activemessaging/filter'
-require 'activemessaging/trace_filter'
+require 'activemessaging/processor_registry'
+require 'activemessaging/round_robin_iterator'
+require 'activemessaging/single_thread_dispatcher'
+require 'activemessaging/subscription_registry'
+require 'activemessaging/system_globals'
+require 'activemessaging/thread_per_broker_strategy'
+
 
 module ActiveMessaging
   
@@ -61,7 +61,16 @@ module ActiveMessaging
   # Raised when a configuration file contains an error. #:nodoc:
   class BadConfigurationException < Exception      
   end
+
+  # Raise when transactional integrity is compromised. Probably a programming
+  # error if we ever see one of these. 
+  class TransactionError < Exception
+  end
   
+  # Attempted to perform an operation on a destination which doesn't exist.
+  class NoDestinationError < Exception    
+  end
+
   Kernel.silence_warnings do
     ActiveMessaging.const_set(:System, SystemGlobals.new)
   end

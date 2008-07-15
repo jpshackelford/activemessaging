@@ -5,35 +5,38 @@ module ActiveMessaging
   # past by ActiveMessaging: one thread per broker.  
   class ThreadPerBrokerStrategy
     
-    def initialize( options = {})
-      @pool               = options[:processor_pool]
-      @connection_manager = options[:connection_manager] 
-      @dispatcher         = Dispatcher.new    
+    def initialize( subscription_registry )
+      @subscription_registry = subscription_registry
+      @dispatcher = SingleThreadDispatcher.new( @subscription_registry )   
     end
     
     # Create new PollerThread for a given target thread id. 
     def create_thread( id )
       
-      # create a destination scheduler for each thread
-      broker = @pool.brokers.find{|b| b.name == id}
+      LOG.debug "Creating new thread [#{id}]."
       
-      round_robin = RoundRobinScheduler.new( 
-        :pool_initializer => lambda{ destination_pool },
-        :expiry_policy    => CallCountExpiryPolicy.new
-      )
+      # one thread per broker, this broker matches the id
+      broker = @subscription_registry.brokers.find{|b| b.to_sym == id}
+      
+      # create the iterator
+      round_robin = RoundRobinIterator.new do
+        subscriptions_by broker 
+      end
+      
+      # the iterator should listen for changes
+      @subscription_registry.add_observer( round_robin )
       
       # create the thread
-      PollerThread.new( :name               => broker.name,
+      PollerThread.new( :name               => broker.to_sym,
                         :dispatcher         => @dispatcher,
-                        :connection_manager => connection_manager,
-                        :scheduler          => round_robin,
-                        :interval           => broker.interval )
+                        :iterator           => round_robin,
+                        :interval           => broker.poll_interval )
     end
     
     # Which threads do we expect to have running? Returns an Array of 
     # identifiers for the expected threads.
     def target_thread_identities
-      @pool.brokers.map{|b| b.name}
+      @subscription_registry.broker_names
     end
     
     # Given a PollerThread, what is its id for purposes of comparison with
@@ -42,10 +45,14 @@ module ActiveMessaging
       thread.name
     end
     
+    def to_s
+      self.class.name  
+    end
+    
     private
     
-    def destination_pool
-      @pool.select{|p| p.destination.broker == broker}
+    def subscriptions_by( broker )
+      @subscription_registry.select{|s| s.broker == broker}
     end
     
   end

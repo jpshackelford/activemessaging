@@ -18,14 +18,15 @@ module ActiveMessaging
     # reference to the newly created item. item#name is considered to be a 
     # unique key for the item in the registry. 
     def register( *args )
-      Log.debug "#{self} is attempting to register #{args.inspect}"
+      LOG.debug "#{self} is attempting to register #{args.inspect}"
       item = create_item( *args )
-      unless item.responds_to?( :name )
-        raise TypeError.new("return value of #create_item must respond to #name")
+      unless item.respond_to?( :name )
+        raise TypeError, "Return value of #create_item must respond to #name, "+
+          "but was a #{item.class.name}."
       end
       @lock.synchronize do
         @registry.store( item.name, item)
-        Log.debug "Registered #{item.name} (#{item}) in #{self}."
+        LOG.debug "Registered #{item.name} (#{item}) in #{self}."
         notify_observers(:add, item)
       end
     end
@@ -33,10 +34,10 @@ module ActiveMessaging
     # Remove an item from the registry. Calls item#name for the unique key.
     # used to delete the item from the registry.
     def delete( item )
-      Log.debug "#{self} is attempting to delete #{item.name} (#{item})"
+      LOG.debug "#{self} is attempting to delete #{item.name} (#{item})"
       @lock.synchronize do
         @registry.delete( item.name )
-        Log.debug "Deleted #{item.name} (#{item}) from #{self}."
+        LOG.debug "Deleted #{item.name} (#{item}) from #{self}."
         notify_observers(:delete, item)
       end
     end
@@ -58,12 +59,18 @@ module ActiveMessaging
     # notifications. Observers must implement #update(*args)
     def add_observer(observer)      
       unless observer.respond_to? :update
-        raise NoMethodError, "observer needs to respond to #update" 
+        raise NoMethodError, "observer, #{observer}, needs to respond to #update" 
       end
-      Log.debug "Adding an observer (#{observer}) to #{self}"
+      LOG.debug "#{self} is attempting to add an observer, #{observer}."
       @lock.synchronize do
         @observers << observer
       end
+      LOG.debug "#{observer} is now listening for events on #{self}."
+    end
+    
+    def to_s
+      "#{self.class.name.split('::').last} (#{@registry.size} items, " +
+      "#{@observers.size} observers)"   
     end
     
     private
@@ -74,16 +81,17 @@ module ActiveMessaging
     end
     
     def notify_observers(*args)
-      Log.debug "Attempting to notify #{self}'s observers."
+      LOG.debug "Attempting to notify #{self}'s observers."
       @lock.synchronize do
         @observers.each do |o| 
-          Log.debug "Notifying #{o} of event on #{self}: #{args.inspect}."
+          LOG.debug "Notifying #{o} of event on #{self}: #{args.inspect}."
           begin
             o.update(*args)
           rescue Exception => e
             # Throw away any exceptions which occur in observers.
-            Log.warn "Caught and ignored exception in observer.\n\t#{e}" +
-                     "\n\tMessage was from #{self} and was #{args.inspect}."
+            LOG.warn "Caught and ignored exception in observer:\n\t#{e}\n\t" +
+                     e.backtrace.join("\n\t") +
+                     "\n\tMessage was from #{self} and was #{args.inspect}."              
           end
         end        
       end

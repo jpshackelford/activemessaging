@@ -1,8 +1,8 @@
   module ActiveMessaging
     
-    class RoundRobinScheduler < BaseScheduler
+    class RoundRobinIterator < BaseIterator
 
-      def schedule        
+      def select_next
         @index ||= -1                      # initialize if necessary
         @index += 1                        # increment counter, starting at 0 
         @index = 0 if @index == pool.size  # start over at end of array

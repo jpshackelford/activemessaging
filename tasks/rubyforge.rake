@@ -18,7 +18,7 @@ namespace :gem do
     end
 
     rf = RubyForge.new
-    puts 'Logging in'
+    puts 'LOGging in'
     rf.login
 
     c = rf.userconfig

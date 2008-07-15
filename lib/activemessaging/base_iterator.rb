@@ -6,23 +6,25 @@ module ActiveMessaging
   # all destination registry entries will have 
   # subscribers and we don't want the destination 
   # registry to have to keep track too.
-  class BaseScheduler
+  class BaseIterator
     
-    def initialize( options = {})
-      @pool_initializer = options[:pool_initializer]
-      @expiry_policy    = options[:expiry_policy] 
+    def initialize(&block)
+      @pool_initializer = block
+      raise ArgumentError, "Iterators must be intialized with a block." if
+        @pool_initializer.nil?
       @pool = []
-      @frozen_pool = nil
-      @guard = Mutex.new
+      @lock = Mutex.new
       reload!
     end
     
     # returns a destination    
     def next_destination
-      @guard.synchronize do
-        reload! if cache_expired?
-        schedule 
-      end  
+      LOG.debug "Attempting to return the next destination."
+      @lock.synchronize{ select_next } 
+    end
+
+    def update(*args)
+      reload!
     end
     
     private
@@ -32,7 +34,7 @@ module ActiveMessaging
     # it is not necessary to worry about concurrency in your implementation. 
     # Use #pool for read-only access to the pool of destinations from which to
     # choose. 
-    def schedule
+    def select_next
       raise NotImplementedError.new      
     end
     
@@ -40,62 +42,25 @@ module ActiveMessaging
     # destinations and appending new ones. Preserves the order of destinations
     # in the pool. Thread-safe.
     def reload!
-      @guard.synchronize do
+      LOG.debug "Attempting to reload #{self}."
+      @lock.synchronize do
         expected = @pool_initializer.call 
         actual = @pool
         # remove old destinations
-         (actual - expected).each{|d| @pool.delete(d) }
+        (actual - expected).each{|d| @pool.delete(d) }
         # append new ones        
         @pool += (expected - actual)
-        @frozen_pool = @pool.dup.freeze
-        @expiry_policy.reset(:count => pool.size)
       end
+      LOG.debug "Successfully to reloaded #{self}."
     end
     
-    # Read-only access to the cache of destinations from which to schedule.
+    # for use in subclasses
     def pool
-      @frozen_pool
+      @pool.dup
     end
-    
-    def cache_expired?
-      @expiry_policy.expired?
-    end
-    
+
   end
   
-  class CallCountExpiryPolicy
-    
-    def initialize(options = {})
-      reset( options )
-    end
-    
-    def expired?
-      @count += 1
-      return @count > @max  
-    end
-    
-    def reset(options = {})
-      @max = options[:count] || 1
-      @count = 0
-    end
-    
-  end
-  
-  
-  class TimeExpiryPolicy
-    
-    def initialize(options = {})
-      reset( options )
-    end
-    
-    def expired?
-      return Time.now > @max
-    end
-    
-    def reset(options = {})
-      @max = Time.now + ( options[:seconds] || 60) # a minute  
-    end
-    
-  end
+
   
 end

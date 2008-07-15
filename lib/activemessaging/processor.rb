@@ -34,10 +34,10 @@ module ActiveMessaging
       begin
         on_error($!)
       rescue ActiveMessaging::AbortMessageException => rpe
-        logger.error "Processor:process! - AbortMessageException caught."
+        logger.error "Processor#process! - AbortMessageException caught."
         raise rpe
       rescue Exception => ex
-        logger.error "Processor:process! - error in on_error, will propagate no further: #{ex.message}"
+        logger.error "Processor#process! - error in on_error, will propagate no further: #{ex.message}"
       end
     end
   end

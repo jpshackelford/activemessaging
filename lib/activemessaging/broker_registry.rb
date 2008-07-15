@@ -36,7 +36,9 @@ module ActiveMessaging
         if a.nil?
           LOG.warn "Attempting to load adapter file."
           load_adapter( @name )
-          a = init_adapter( "Adapters::#{class_name}")
+          a = init_adapter( "ActiveMessaging::Adapters::#{class_name}")
+          a = init_adapter( "Adapters::#{class_name}") if a.nil?
+          a = init_adapter( class_name ) if a.nil?
         end
         
         # configure the adapter
@@ -51,34 +53,56 @@ module ActiveMessaging
         end
         @adapter = a        
       end
-      @adapter
+      return @adapter
     end
 
+    def poll_interval
+      interval = 5 # Picking a number out of my hat. Hopefully the user or 
+                   # adapter will propose something they like better. 
+      if @config.first.respond_to?( :[] ) &&
+         interval = @config.first[:poll_interval]
+      end
+      if interval.nil? && @adapter.respond_to?(:poll_interval)
+        interval = @adapter.poll_interval
+      end
+    end
+    
+    def to_s
+      "BrokerReference(:#{@name}: #{@adapter.class.name})"
+    end
+     
     private
 
     def adapter_file( name )
-      File.join(File.expand_path(File.dirname( __FILE__)), 'adapters', name)
+      File.join(File.expand_path(File.dirname( __FILE__)), 'adapters', "#{name}.rb")
     end
 
     def load_adapter( name )
+      old_verbose = $VERBOSE
+      $VERBOSE = false
       begin
-        file = adapter_file( name.to_s ) 
+        file = adapter_file( name) 
         load file 
       rescue LoadError => error  
         LOG.warn "Unable to load adapter from #{file}.\n\t#{error}"
       end
+      $VERBOSE = old_verbose
     end
   
     def init_adapter( class_name )
       begin
-        return class_name.constantize.new
+        adapter = class_name.constantize.new
       rescue NameError
-        LOG.warn "Could not initialize adapter class #{class_name}."
+        LOG.debug "Could not initialize adapter class #{class_name}."
+        return nil
       rescue ArgumentError
-        Log.error "#{class_name} adapter needs a no arg constructor."
+        LOG.error "#{class_name} adapter needs a no arg constructor."
+        return nil
+      else
+        LOG.debug "Successfully initialized adapter #{adapter.class.name}"
+        return adapter
       end
     end
-    
   end
   
 end

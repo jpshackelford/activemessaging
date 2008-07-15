@@ -10,6 +10,7 @@ namespace :test do
                    else PROJ.test.files end
     t.ruby_opts += PROJ.ruby_opts
     t.ruby_opts += PROJ.test.opts
+    t.options = "-v" # display verbose results 
   end
 
   if HAVE_RCOV

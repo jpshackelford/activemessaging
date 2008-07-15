@@ -2,4 +2,5 @@
 <loadpath>
 	<pathentry path="" type="src"/>
 	<pathentry path="org.rubypeople.rdt.launching.RUBY_CONTAINER" type="con"/>
+	<pathentry path="GEM_LIB/stomp-1.0.5/lib" type="var"/>
 </loadpath>
