@@ -11,11 +11,11 @@ module ActiveMessaging
       p += args
       File.expand_path(File.join(*p))  
     end
-
+    
     def lib_path(*args)
       path(LIB_DIR,*args)
     end
-
+    
     def test_path(*args)
       path(TEST_DIR,*args)
     end
