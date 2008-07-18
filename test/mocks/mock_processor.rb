@@ -3,7 +3,7 @@ class MockProcessor
   
   attr_reader :call_count
   
-  def expect(message, headers = {}, count = 1)
+  def expect(count, message, headers = {} )
     @expected_message = message
     @expected_headers = headers
     @expected_count   = count

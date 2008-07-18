@@ -55,11 +55,11 @@ module ActiveMessaging
       end #def
       
       def alive?
-        @thread.alive?
+        (@thread.alive? if @thread) || false
       end
       
       def join
-        @thread.join   
+        (@thread.join if @thread) || false   
       end
       
       def stop

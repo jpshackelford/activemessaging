@@ -101,7 +101,7 @@ module ActiveMessaging
     def start_poller
       boot_server!
       LOG.debug "Initializing poller."
-      @poller ||= Poller.new( polling_strategy, @registry[:subscription] )
+      @poller ||= Poller.new( polling_strategy )
       LOG.debug "Starting poller."
       @poller.start
     end
@@ -125,7 +125,7 @@ module ActiveMessaging
     def polling_strategy
       if @polling_strategy.nil?
         strategy_class = @registry[:use_class][:polling_strategy]
-        ps = strategy_class.new( @registry[:subscription])
+        ps = strategy_class.new( @registry[:subscription] )
         @polling_strategy = ps 
       end 
       return @polling_strategy

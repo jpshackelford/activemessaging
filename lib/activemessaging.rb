@@ -22,6 +22,7 @@ require 'rubigen'
 # ActiveMessaging
 require 'activemessaging/base_iterator'
 require 'activemessaging/base_message'
+require 'activemessaging/base_polling_strategy'
 require 'activemessaging/base_registry'
 require 'activemessaging/broker_registry'
 require 'activemessaging/custom_class_registry'

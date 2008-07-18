@@ -35,6 +35,9 @@ require 'fileutils'
 
 # load ActiveMessaging test framework
 require 'framework/logging'
+require 'framework/poller_control'
+require 'framework/reliable_msg'
+require 'framework/mock'
 
 # setup a logger for this test run.
 include ActiveMessaging::Test::Logging 
