@@ -15,7 +15,7 @@ module ActiveMessaging
       # Remove the old log file and create a new log file.
       def new_test_logger
         rm_log
-        Logger.new( logfile_path )
+        ::Logger.new( logfile_path )
       end
       
     end
@@ -23,7 +23,7 @@ module ActiveMessaging
 end
 
 # Hack Test::Unit::TestCase so that a message is added to the log file
-# seperating one test method execution from another.
+# separating one test method execution from another.
 module Test
   module Unit
     class TestCase

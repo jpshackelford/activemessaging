@@ -15,7 +15,7 @@ module ActiveMessaging
       
       # Get the real broker from the symbolic broker name.
       b = @broker_registry[  broker || default_broker ] 
-                                        #
+                                       
       raise BadConfigurationException.new(
         "No broker registered for: #{broker || default_broker}.") if b.nil?
 

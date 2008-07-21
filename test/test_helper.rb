@@ -1,3 +1,5 @@
+require File.expand_path( File.join( File.dirname(__FILE__), %w[.. lib activemessaging]))
+
 # Provide shortcuts for finding our way around the project tree
 module ActiveMessaging
   
@@ -22,9 +24,6 @@ module ActiveMessaging
     
   end  
 end
-
-# Require ActiveMessaing library
-require ActiveMessaging.lib_path('activemessaging')
 
 # Add the testing directory to the load path
 $LOAD_PATH.unshift( ActiveMessaging::TEST_DIR )

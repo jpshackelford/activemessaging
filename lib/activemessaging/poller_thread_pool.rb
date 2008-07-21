@@ -125,5 +125,9 @@ module ActiveMessaging
       @running || @pool_lock.synchronize{@threads.values.select{|t|t.alive?}.size>0}
     end
     
+    def to_s
+      self.class.name  
+    end
+    
   end
 end

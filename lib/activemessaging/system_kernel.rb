@@ -10,7 +10,7 @@ module ActiveMessaging
   # access this directly since convenience methods are provided in base classes
   # which end users would ordinarily extend, e.g.  ActiveMessaging::Processor.
   
-  class SystemGlobals
+  class SystemKernel
     
     attr_reader :logger, :environment, :gateway
     
@@ -18,11 +18,8 @@ module ActiveMessaging
     # customizable elements are ThreadStrategy and ConnectionPool 
     
     def initialize
-      @selected_environment = :production
       self.logger = Logger.new(STDOUT)
-      @client_ready = false
-      @server_ready = false
-      @registry = {}
+      reset
     end
     
     # Enough to send messages, but not to process them.
@@ -97,6 +94,23 @@ module ActiveMessaging
       @environment = selected_environment
     end
     
+    # Obtain registry entries, esp. for testing.
+    def registry_entry( registry, entry_name )
+      r = @registry[ registry ]
+      r[ entry_name ] if r
+    end
+    
+    # Reset the system, including poller, registries, etc. Will attempt to stop
+    # any running poller first.
+    def reset
+      stop_poller if @poller
+      @poller = nil
+      @selected_environment = :production
+      @client_ready = false
+      @server_ready = false
+      @registry = {}      
+    end
+    
     # Begin polling.
     def start_poller
       boot_server!
@@ -108,8 +122,10 @@ module ActiveMessaging
     
     # Stop polling
     def stop_poller
-      LOG.debug "Stopping poller."
-      @poller.stop unless @poller.nil?
+      unless @poller.nil?
+        LOG.debug "Stopping poller."
+        @poller.stop 
+      end
     end
     
     # Reset poller strategy and connection manager if these

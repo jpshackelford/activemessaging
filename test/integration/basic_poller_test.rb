@@ -51,7 +51,7 @@ else
       stop_poller
       
       # verify that the message was processed
-      mock_processor_class.verify!
+      verify_mock mock_processor_class
     end
     
   end

@@ -7,7 +7,7 @@ load 'tasks/setup.rb'
 ensure_in_path 'lib'
 require 'ActiveMessaging'
 
-task :default => 'spec:run'
+task :default => 'test:run'
 
 PROJ.name = 'ActiveMessaging'
 PROJ.authors = 'John-Mason P. Shackelford'
