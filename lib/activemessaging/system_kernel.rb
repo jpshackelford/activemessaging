@@ -247,6 +247,12 @@ module ActiveMessaging
         end        
       end
       
+      # Read a broker.yml file and configure brokers accordingly
+      def broker_yml( filename )
+        config = file( filename )
+        configure( :broker, :brokers => config )
+      end
+
       private
       
       def registry( name )        

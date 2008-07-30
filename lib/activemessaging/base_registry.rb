@@ -124,7 +124,6 @@ module ActiveMessaging
     end
     
     def notify_observers(*args)
-      LOG.debug "Attempting to notify #{self}'s observers."
       @observers.each do |o| 
         LOG.debug "Notifying #{o} of event on #{self}: #{args.inspect}."
         begin
