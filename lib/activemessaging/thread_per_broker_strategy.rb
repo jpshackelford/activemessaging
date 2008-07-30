@@ -19,7 +19,7 @@ module ActiveMessaging
       LOG.debug "Creating new thread [#{id}]."
       
       # one thread per broker, this broker matches the id
-      broker = @subscription_registry.brokers.find{|b| b.to_sym == id}
+      broker = @subscription_registry.brokers.find{|b| b.name == id}
       
       # create the iterator
       round_robin = RoundRobinIterator.new do
@@ -30,7 +30,7 @@ module ActiveMessaging
       @subscription_registry.add_observer( round_robin )
       
       # create the thread
-      PollerThread.new( :name              => broker.to_sym,
+      PollerThread.new( :name              => broker.name,
                        :dispatcher         => @dispatcher,
                        :iterator           => round_robin,
                        :interval           => broker.poll_interval )

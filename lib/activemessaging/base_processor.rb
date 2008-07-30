@@ -45,6 +45,10 @@ module ActiveMessaging
     end
   end
   
+  def reentrant?
+    true
+  end
+  
   # alias for compatibility
   Processor = BaseProcessor
   

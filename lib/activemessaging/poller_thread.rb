@@ -23,12 +23,12 @@ module ActiveMessaging
               subscription = my.iter.next_destination
               
               # Grab message
-              LOG.debug "Preparing to receive message from #{subscription}."
+              LOG.debug "Preparing to draw message from #{subscription}."
               m = subscription.destination.receive
               
               # Dispatch
               if m
-                LOG.debug "Received message."
+                LOG.debug "Poller received message."
                 begin
                   LOG.debug "Dispatching."              
                   my.dispatcher.dispatch( m )               # get message
@@ -64,6 +64,10 @@ module ActiveMessaging
       
       def stop
         @run_flag = false
+      end
+      
+      def thread_id
+        @thread.object_id
       end
       
     end

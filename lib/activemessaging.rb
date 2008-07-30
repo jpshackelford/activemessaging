@@ -29,7 +29,9 @@ unless defined? ActiveMessaging
   require 'activemessaging/base_polling_strategy'
   require 'activemessaging/base_processor'
   require 'activemessaging/base_registry'
+  require 'activemessaging/broker'
   require 'activemessaging/broker_registry'
+  require 'activemessaging/configuration_processor'
   require 'activemessaging/custom_class_registry'
   require 'activemessaging/destination_registry'
   require 'activemessaging/gateway'
@@ -75,9 +77,26 @@ unless defined? ActiveMessaging
     class NoDestinationError < Exception    
     end
     
-    Kernel.silence_warnings do
-      ActiveMessaging.const_set(:System, SystemKernel.new)
+    # Create ActiveMessaging.reset! method.
+    class << self
+      # Restart all of ActiveMessaging stopping the running poller (if any) 
+      # and resetting all registries. The only thing that lives through the
+      # reset is the logger.
+      def reset!
+        Kernel.silence_warnings do
+          if defined?( System )
+            previous_logger = System.logger
+            System.reset!
+            ActiveMessaging.const_set(:System, nil)
+          end          
+          ActiveMessaging.const_set(:System, SystemKernel.new)
+          ActiveMessaging::System.logger = previous_logger if 
+            defined?( previous_logger ) && previous_logger != nil
+        end
+      end
     end
     
+    # boot up!
+    reset!
   end
 end # defined?

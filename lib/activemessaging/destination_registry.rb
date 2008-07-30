@@ -5,19 +5,15 @@ module ActiveMessaging
     def initialize( broker_registry )
       super()
       @broker_registry = broker_registry
-      @options = {}
     end
     
     # Note that newly created items in the destination registry are frozen
     # so that adapter implementers will not mistakenly use instance variables
     # but will maintain all state in thread local storage. 
-    def create_item( name, destination, publish_headers={}, broker=nil)
+    def create_item( name, destination, publish_headers={}, broker_name=nil)
       
       # Get the real broker from the symbolic broker name.
-      b = @broker_registry[  broker || default_broker ] 
-                                       
-      raise BadConfigurationException.new(
-        "No broker registered for: #{broker || default_broker}.") if b.nil?
+      b = @broker_registry[  broker_name ]                                       
 
       raise TypeError.new("Broker must respond to #new_destination") unless 
         b.adapter.respond_to?( :new_destination ) 
@@ -34,14 +30,11 @@ module ActiveMessaging
       @registry.keys
     end
     
-    def configure(options = {})
-      @options = options  
-    end
-    
-    private
-    
-    def default_broker
-      @options[:default_broker] || :reliable_msg
+    def configure( options )
+      entries = options[:destinations]
+      entries.each_pair do |name,d|
+        register( name, d[:destination], d[:headers], d[:broker])
+      end
     end
     
   end

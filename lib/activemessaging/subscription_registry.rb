@@ -49,7 +49,7 @@ module ActiveMessaging
     end
     
     def broker_names
-      brokers.map{|b| b.to_sym}
+      brokers.map{|b| b.name}
     end
     
     def brokers

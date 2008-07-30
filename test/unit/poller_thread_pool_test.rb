@@ -5,7 +5,7 @@ require 'mocks/mock_strategy'
 # Tests poller for one broker, one destination, and one message using
 # ReliableMsg broker.
 class PollerThreadPoolTest < Test::Unit::TestCase 
-
+  
   def setup 
     @strategy = MockStrategy.new
     @poller_thread_pool = ActiveMessaging::PollerThreadPool.new( @strategy )    
@@ -21,13 +21,13 @@ class PollerThreadPoolTest < Test::Unit::TestCase
     
     verify_mock @strategy
   end
-
+  
   def test_poller_waits_for_configuration
-
+    
     @strategy.delay_n_calls( 1 )
     @strategy.thread_targets_are :a, :b          # <-- Arbitrary values.
     @strategy.expect_thread_execution_count( 2 ) # <-- Should match above number 
-                                                 #     of arguments above.
+    #     of arguments above.
     
     t = Thread.start do
       @poller_thread_pool.start
@@ -38,7 +38,7 @@ class PollerThreadPoolTest < Test::Unit::TestCase
     
     assert_equal true, t.alive?, "Poller should block, even if strategy " +
       "doesn't immediately identify threads."
-      
+    
     assert_equal true, @poller_thread_pool.running?,
       "Poller should be considered running even if the strategy doesn't " +
       "immediately identify target threads."
@@ -54,10 +54,32 @@ class PollerThreadPoolTest < Test::Unit::TestCase
     
     # verify that expectations are met.
     verify_mock @strategy
-
+    
     @poller_thread_pool.stop
   end
   
+  def test_update
+    
+    @strategy.thread_targets_are :a, :b, :c
+    @poller_thread_pool.start
+    sleep 0.2 # wait for threads to start
+    assert_equal [:a, :b, :c], @poller_thread_pool.running_threads.
+      map{|t| t.name}.sort, "Failed to start threads as expected."
+    
+    @strategy.thread_targets_are :a, :c, :d
+    @poller_thread_pool.update(:add, nil) # content of update signal is ignored;
+                                          # we always ask the strategy
+                                          
+    sleep 0.2 # wait for update to take effect to start
+    assert_equal [:a, :c, :d], @poller_thread_pool.running_threads.
+      map{|t| t.name}.sort, "Failed to update threads as expected."        
+  end
 end
 
+# Why isn't this part of Symbol anyway?
+class Symbol
+  def <=>( obj )
+    self.to_s <=> obj.to_s    
+  end
+end
 

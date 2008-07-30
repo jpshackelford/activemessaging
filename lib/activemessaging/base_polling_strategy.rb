@@ -26,22 +26,18 @@ module ActiveMessaging
     end
 
     # Which threads do we expect to have running? Returns an Array of 
-    # identifiers for the expected threads.
+    # identifiers for the expected threads expected to be equal to the names
+    # given threads and available via PollerThread#name.
     def target_thread_identities
       raise NotImplementedError, "Implement in subsclasses."
     end
     
-    # Create new PollerThread for a given target thread id. 
+    # Create new PollerThread for a given target thread id. The id supplied 
+    # should be used as the value for PollerThread#name.
     def create_thread( id )
       raise NotImplementedError, "Implement in subsclasses."
     end
-    
-    # Given a PollerThread, what is its id for purposes of comparison with
-    # the results of #target_thread_identities
-    def identify( thread )
-      thread.name
-    end
-    
+        
     def to_s
       self.class.name  
     end

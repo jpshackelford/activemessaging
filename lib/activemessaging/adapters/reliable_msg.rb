@@ -152,28 +152,26 @@ unless defined? ActiveMessaging::Adapters::ReliableMsg
         public
         
         #configurable params
-        attr_accessor :reliable, :poll_interval, :tx_timeout
+        attr_accessor :reliable, :poll_interval, :tx_timeout, :name
         
         def initialize
           @poll_interval = 1
           @reliable      = true
           @tx_timeout    = ::ReliableMsg::Client::DEFAULT_TX_TIMEOUT
+          @name          = :reliable_msg
         end
         
         def configure( options = {})
           @poll_interval = options[:poll_interval]  || @poll_interval 
           @reliable      = options[:reliable]       || @reliable 
-          @tx_timeout    = options[:tx_timeout]     || @tx_timeout 
+          @tx_timeout    = options[:tx_timeout]     || @tx_timeout
+          @name          = options[:name]           || @name
         end
         
         def new_destination( name, destination, headers )
           Destination.new( name, destination, headers, self )
         end
-        
-        def to_sym
-          :reliable_msg
-        end
-        
+                
         def to_s
           self.class.name
         end

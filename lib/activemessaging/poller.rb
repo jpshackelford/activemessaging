@@ -10,14 +10,14 @@ module ActiveMessaging
     # Begin polling
     def start
       Signal.trap('TERM', 'EXIT'){ stop }
-      LOG.debug "Starting poller."
+      LOG.debug "[P] Starting poller."
       @thread_pool.start
       @thread_pool.block
     end
     
     # Stop polling
     def stop
-      LOG.debug "Stopping poller."
+      LOG.debug "[P] Stopping poller."
       @thread_pool.stop
     end
     

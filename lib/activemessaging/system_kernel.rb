@@ -19,7 +19,7 @@ module ActiveMessaging
     
     def initialize
       self.logger = Logger.new(STDOUT)
-      reset
+      reset!
     end
     
     # Enough to send messages, but not to process them.
@@ -102,7 +102,7 @@ module ActiveMessaging
     
     # Reset the system, including poller, registries, etc. Will attempt to stop
     # any running poller first.
-    def reset
+    def reset!
       stop_poller if @poller
       @poller = nil
       @selected_environment = :production
@@ -191,7 +191,7 @@ module ActiveMessaging
       def initialize( registry )
         @r = registry
       end
-     
+      
       def method_missing( registry, *args )        
         # perhaps we are trying to configure a specific registry
         if registry =~ /^(.*)_configuration$/
@@ -216,8 +216,9 @@ module ActiveMessaging
         hash.each_pair do |reg_name, h|
           begin
             configure( reg_name, h )
-          rescue BadConfigurationException  
-            LOG.warn "Could not configure #{reg_name} with #{h.inspect}."
+          rescue BadConfigurationException  => e
+            LOG.warn "Could not configure #{reg_name} with #{h.inspect}." + 
+                     "\n\t#{e}\n\t#{e.backtrace.join("\t\n")}"        
           end
         end
       end
@@ -249,21 +250,30 @@ module ActiveMessaging
       private
       
       def registry( name )        
-        @r[registry_name.to_sym]
+        @r[name.to_sym]
       end
       
       def configurable?( registry_name )
-        if r = registry( registry_name ) &&      # registry exists
-          m = r.method( :configure )    &&      # registry has configure method
-          [1,-1,-2].include?( m.arity )         # method takes one argument          
-          return true
-        else
+        begin
+          r = registry( registry_name )          # registry entry?
+          m = r.method( :configure ) if r        # has configure method?
+          if m && [1,-1,-2].include?( m.arity )  # method takes one argument?          
+            return true
+          else
+            LOG.warn "No such registry for #{registry_name}." if r.nil?            
+            LOG.warn "#configure must take an argument" if r && m
+            return false
+          end
+        rescue NameError         
+          LOG.warn "No #configure method for #{registry_name} registry " + 
+            "(#{r.class.name})."
           return false
         end
       end
       
       def configure( registry_name, hash)
         if configurable?( registry_name )
+          LOG.debug "Configuring #{registry_name}."
           registry( registry_name ).configure( hash )
         else
           raise BadConfigurationException, "Unable to configure #{registry_name}."
@@ -271,6 +281,8 @@ module ActiveMessaging
       end
       
     end # DSL class
+    
+    public
     
     def to_s
       self.class.name

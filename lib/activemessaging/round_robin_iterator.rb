@@ -9,6 +9,10 @@
         return pool[@index]      
       end
       
+      def to_s
+        self.class.name
+      end
+      
     end
     
   end

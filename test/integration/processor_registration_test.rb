@@ -2,8 +2,10 @@ require File.expand_path( File.dirname(__FILE__) + '/../test_helper' )
 
 class ProcessorRegistrationTest < Test::Unit::TestCase
   
+  include ActiveMessaging::Test::PollerControl
+  
   def setup
-    ActiveMessaging::System.reset
+    ActiveMessaging.reset!
   end
     
   def test_processor_registered_on_require
@@ -39,9 +41,5 @@ class ProcessorRegistrationTest < Test::Unit::TestCase
   
   end
   
-
-  def registry_entry( registry, entry )
-    ActiveMessaging::System.registry_entry( registry, entry )
-  end
 
 end

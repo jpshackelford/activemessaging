@@ -1,0 +1,15 @@
+--- 
+:broker: 
+  :brokers: 
+    :env3: 
+      :broker1: 
+        :adapter: :adapter_stub
+        :opt1: 1
+      :broker2: 
+        :adapter: :adapter_stub
+        :opt1: 1
+    :env1: :adapter_stub
+    :env2: 
+      :adapter: :adapter_stub
+      :opt1: 1
+  :default: :mock_adapter

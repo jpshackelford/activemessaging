@@ -3,29 +3,25 @@ require File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'ActiveM
 
 require 'daemons'
 
-## Initialize ActiveMessaging and start the Poller 
-# init = ActiveMessaging::Initializer.new
-# init.configure( init.default )
-# init.configure( init.load ( init.config_file ))
-# init.boot_server
-#
-# start_poller = lambda do
-#  ActiveMessaging::System.start_poller
-# end
+# Initialize ActiveMessaging and start the Poller 
 
-# options = {
-#             :app_name   => "am-poller",
-#             :proc       => start_poller,
-#             :monitor    => true,
-#             :dir_mode   => :normal,
-#             :multiple   => false,
-#             :ontop      => false,
-#             :backtrace  => false,
-#             :log_output => true,             
-#             :mode       => :proc
-#           }
-#           
-# controller = Daemons::Controller.new(options, ARGV)
-# controller.catch_exceptions do
-#   controller.run
-# end
+start_poller = lambda do
+  ActiveMessaging::System.start_poller
+end
+
+options = {
+            :app_name   => "am-poller",
+            :proc       => start_poller,
+            :monitor    => false,
+            :dir_mode   => :normal,
+            :multiple   => false,
+            :ontop      => false,
+            :backtrace  => false,
+            :log_output => true,             
+            :mode       => :proc
+          }
+          
+controller = Daemons::Controller.new(options, ARGV)
+controller.catch_exceptions do
+  controller.run
+end
