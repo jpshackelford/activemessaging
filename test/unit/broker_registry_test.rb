@@ -10,7 +10,9 @@ class BrokerRegistryTest < Test::Unit::TestCase
   def setup
     ActiveMessaging.reset!
     @registry = ActiveMessaging::BrokerRegistry.new
-    @config = yml_fixture('configure_brokers')
+    @config = ActiveMessaging::System.configure do |my|
+      my.file fixture_path('configure_brokers.yml')
+    end
   end
   
   def test_auto_register_default_broker

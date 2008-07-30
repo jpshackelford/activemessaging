@@ -1,10 +1,10 @@
 --- 
-:destination: 
-  :destinations: 
-    :dest2: 
-      :destination: /queue/Destination2
-    :dest1: 
-      :destination: /queue/Destination1
-      :headers: {}
+destination: 
+  destinations: 
+    dest1: 
+      broker: :reliable_msg
+      destination: /queue/Destination1
+      headers: {}
 
-      :broker: :reliable_msg
+    dest2: 
+      destination: /queue/Destination2

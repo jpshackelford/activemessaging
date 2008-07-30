@@ -32,6 +32,7 @@ unless defined? ActiveMessaging
   require 'activemessaging/broker'
   require 'activemessaging/broker_registry'
   require 'activemessaging/configuration_processor'
+  require 'activemessaging/core_ext'  
   require 'activemessaging/custom_class_registry'
   require 'activemessaging/destination_registry'
   require 'activemessaging/gateway'
@@ -44,7 +45,6 @@ unless defined? ActiveMessaging
   require 'activemessaging/subscription_registry'
   require 'activemessaging/system_kernel'
   require 'activemessaging/thread_per_broker_strategy'
-  
   
   module ActiveMessaging
     

@@ -14,6 +14,8 @@ module ActiveMessaging
     end
     
     def configure(options = {})
+      return if options.nil?      
+            
       LOG.debug "BrokerRegistry received configuration message: " +
                 "#{options.inspect}"
       

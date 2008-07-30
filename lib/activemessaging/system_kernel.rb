@@ -229,20 +229,20 @@ module ActiveMessaging
       # rather than explicit class references as in #default.
       def file( config_file )
         unless File.exists?( config_file )
-          LOG.info "No user defined configuration file found at " + 
-                         "#{config_file}."
+          raise BadConfigurationException, "No user defined configuration " + 
+            "file found at #{config_file}."
         else
           begin
             config = YAML.load_file(config_file)
             unless config.respond_to? :[]
-              LOG.warn "YAML file expected to contain a hash but did not. "+ 
-                             "Fix #{config_file} and try again."        
+              raise BadConfigurationException, "YAML file expected to contain "+
+                "a hash but did not. Fix #{config_file} and try again."        
             else
-              return config
+              return config.symbolize_keys!(:deep)
             end
           rescue Exception => e
-            LOG.warn "Failed to load user defined configuration file" + 
-                           "#{config_file}.\n\t#{e}"
+            raise BadConfigurationException, "Failed to load user defined " +
+              "configuration file #{config_file}.\n\t#{e}"
           end
         end        
       end
@@ -255,7 +255,7 @@ module ActiveMessaging
       
       def configurable?( registry_name )
         begin
-          r = registry( registry_name )          # registry entry?
+          r = registry( registry_name.to_sym )   # registry entry?
           m = r.method( :configure ) if r        # has configure method?
           if m && [1,-1,-2].include?( m.arity )  # method takes one argument?          
             return true
@@ -279,7 +279,7 @@ module ActiveMessaging
           raise BadConfigurationException, "Unable to configure #{registry_name}."
         end 
       end
-      
+
     end # DSL class
     
     public

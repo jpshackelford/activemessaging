@@ -21,11 +21,14 @@ class ConfigurationProcessorTest < Test::Unit::TestCase
     end
   end
   
-  def test_on_message
+  def test_on_message          
     
     # fixture contains two destinations in order to demonstrate that
     # configuration messages can handle more than one at a time.
-    @mock_kernel.expect_configure_message yml_fixture('configure_destinations')   
+    
+    config = yml_fixture('configure_destinations').symbolize_keys!(:deep) 
+
+    @mock_kernel.expect_configure_message( config )
 
     @processor.on_message fixture('configure_destinations.yml')
 

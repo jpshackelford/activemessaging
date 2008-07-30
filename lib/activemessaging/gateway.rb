@@ -22,7 +22,7 @@ module ActiveMessaging
     # Send a message from to the named destination.
     def publish( destination_name, body, publisher=nil, headers={}, timeout=1 )
       
-      LOG.debug "Sending message to #{destination_name}."
+      LOG.debug "[M] Sending message to #{destination_name}."
       
       raise ArgumentError, "Destination name must not be nil or empty." if 
       destination_name.to_s.empty? 
@@ -31,7 +31,7 @@ module ActiveMessaging
        ( body.to_s.empty? )
             
       dest = find_destination( destination_name )
-      LOG.debug "Found target destination :#{dest.name}"
+      LOG.debug "[M] Found target destination :#{dest.name}"
       
       details = {
         :publisher   => publisher, 
@@ -101,7 +101,7 @@ module ActiveMessaging
           return block_value || message 
         end            
       rescue Timeout::Error=> error
-        LOG.error "Timed out trying to send the message #{message} to " + 
+        LOG.error "[M] Timed out trying to send the message #{message} to " + 
                 "destination #{destination_name} via broker " + 
                 "#{dest.broker.name}."
         raise error
