@@ -9,17 +9,19 @@ rescue Interrupt
   exit 1
   
 else
-
+  
+  BIN_FILE = File.basename( $0 )
+  
   if ARGV.empty?
-    puts "Usage: #{0} DESTINATION MESSAGE..."  
+    puts "Usage: #{BIN_FILE} DESTINATION MESSAGE..."  
   else
-    config_file   = "#{$0}.yml"
+    config_file   = "#{BIN_FILE}.yml"
     destination   =  ARGV.shift
     message_files =  ARGV
     
     # Configure ActiveMessaging
           
-    logger = ::Logger.new( "#{$0}.log" )
+    logger = ::Logger.new( "#{BIN_FILE}.log" )
     logger.formatter = ActiveMessaging::LogFormat.new
     
     ActiveMessaging::System.logger = logger

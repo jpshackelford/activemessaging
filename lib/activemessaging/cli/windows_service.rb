@@ -10,8 +10,8 @@ module ActiveMessaging
     class WindowsService < Win32::Daemon
       
       include ::Win32
-      
-      SERVICE_NAME        = "ActiveMessaging (#{$0})"
+      BIN_FILE            = File.basename($0)
+      SERVICE_NAME        = "ActiveMessaging (#{BIN_FILE})"
       SERVICE_DESCRIPTION = "ActiveMessaging Poller Daemon" 
       
       RELIABLE_MSG_CONFIG = { 'store' => { 'type' => 'disk' },
@@ -25,7 +25,7 @@ module ActiveMessaging
         options.log_level = ::Logger::INFO
         
         opts = OptionParser.new do |opts|
-          opts.banner = "Usage: #{$0} [options] command "
+          opts.banner = "Usage: #{BIN_FILE} [options] command "
           
           opts.separator ""
           opts.separator "Commands:"          
@@ -69,11 +69,12 @@ module ActiveMessaging
       def self.execute( opts )
         begin
           case opts.command
-            when 'install', 'register'
+          when 'install', 'register'
+              binfile = 'ruby "' + File.expand_path($0) + '"'
               Service.create(SERVICE_NAME, nil, 
                 :display_name       => SERVICE_NAME,
                 :description        => SERVICE_DESCRIPTION,
-                :binary_path_name   => 'c:\ruby\bin\ruby "' + File.expand_path($0) + '"'
+                :binary_path_name   => binfile
               )                        
               puts "Registered #{SERVICE_NAME} service."
             when 'remove', 'delete'
