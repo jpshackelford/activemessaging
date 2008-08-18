@@ -18,13 +18,15 @@ module ActiveMessaging
       # never hold more than one lock while dispatching, we should avoid 
       # trouble.  
       @lock.synchronize do
-        LOG.info "Dispatching #{message}."
+        LOG.info  "Dispatching message: #{message.headers[:id]}"
+        LOG.debug "Dispatching message:\n\n#{message}\n\n"
         
         processors = @subscription_registry.processors_for( message )
         LOG.warn "No processors for #{message}." if processors.empty?
         
         processors.each do |p|
-          LOG.info "Processing #{message} with #{p}."
+          LOG.info "Processing message: #{message.headers[:id]} with #{p}."
+          LOG.debug "Processing message:\n\n#{message}\n\n"
           p.process!( message )
         end
         

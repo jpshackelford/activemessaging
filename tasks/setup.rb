@@ -22,7 +22,7 @@ PROJ = OpenStruct.new(
   :authors => 'John-Mason P. Shackelford',
   :email => 'jpshack@gmail.com',
   :url => "\000",
-  :version => ENV['VERSION'] || '0.6.0',
+  :version => ENV['VERSION'] || '0.7.0',
   :exclude => %w(tmp$ bak$ ~$ CVS .svn/ .git/ ^pkg/ ^queues/ uuid.state),
   :release_name => ENV['RELEASE'],
 
@@ -53,7 +53,7 @@ PROJ = OpenStruct.new(
   # Gem Packaging
   :gem => OpenStruct.new(
     :dependencies => [],
-    :executables => ['am-poller'],
+    :executables => ['am-enq', 'amsvc'],
     :extensions => FileList['ext/**/extconf.rb'],
     :files => nil,
     :need_tar => false,

@@ -1,7 +1,11 @@
 class MockProcessor
   include Test::Unit::Assertions
   
-  attr_reader :call_count
+  attr_accessor :call_count, :received_message
+  
+  def initialize
+    @call_count = 0
+  end
   
   def expect(count, message, headers = {} )
     @expected_message = message
@@ -10,9 +14,21 @@ class MockProcessor
     self
   end
   
-  def process!(message)
+  def process!(message)    
+    capture message
+    increment_call_count
+  end
+  
+  def capture( message )
     @received_message = message.body
-    @call_count += 1
+    self.class.single_instance.received_message = message.body if
+      self.class.has_expectations?
+  end
+  
+  def increment_call_count
+    @call_count += 1     
+    self.class.single_instance.call_count += 1 if 
+      self.class.has_expectations?
   end
   
   def verify!
@@ -23,14 +39,45 @@ class MockProcessor
     # TODO verify headers
   end
   
+  def name
+    self.class.name
+  end 
+  
   # An instance can act like a class
   def new
     @call_count = 0
     self
   end
   
-  def name
-    self.class.name
-  end  
+  def instance_methods
+    self.methods
+  end
   
+  # Allow expectations on the class
+  class << self
+    
+    attr_accessor :single_instance
+    
+    def expect(*args)
+      @single_instance = new
+      @single_instance.expect(*args)
+    end
+    
+    def has_expectations?
+      defined?( @single_instance ) && @single_instance != nil  
+    end
+    
+    def verify!
+      @single_instance.verify!
+      @single_instance = nil
+    end
+    
+  end
+  
+end
+
+# Additional processor classes for use in testing setup of 
+# processor registry where multiple processor entries exist.
+4.times do |n|
+  Object.const_set("MockProcessor#{n+1}", Class.new(MockProcessor))
 end

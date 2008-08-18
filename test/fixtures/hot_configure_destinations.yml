@@ -4,8 +4,6 @@ destination:
     dest1: 
       broker: :reliable_msg
       destination: /queue/Destination1
-      headers: 
-        header1: value1
-        header2: value2
+
     dest2: 
       destination: /queue/Destination2

@@ -16,7 +16,7 @@ module ActiveMessaging
     def configure(options = {})
       return if options.nil?      
             
-      LOG.debug "BrokerRegistry received configuration message: " +
+      LOG.debug "BrokerRegistry received configuration message:\n\n" +
                 "#{options.inspect}"
       
       env = ActiveMessaging::System.environment

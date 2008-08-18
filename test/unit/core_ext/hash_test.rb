@@ -8,8 +8,8 @@ class HashTest < Test::Unit::TestCase
             { 'c' => 1,
               'd' => 2},        
             'e' => 
-            { 'f' => 3,
-              'g' => 4}
+            [{'f' => 3},
+             {'g' => 4}]
           }
         }    
   end
@@ -20,8 +20,8 @@ class HashTest < Test::Unit::TestCase
             { :c => 1,
               :d => 2},        
             :e => 
-            { :f => 3,
-              :g => 4}
+            [{:f => 3},
+             {:g => 4}]
           }
         }
     @h1.symbolize_keys!(:deep)    
@@ -34,12 +34,12 @@ class HashTest < Test::Unit::TestCase
             { 'c' => 1,
               'd' => 2},        
             'e' => 
-            { 'f' => 3,
-              'g' => 4}
+            [{'f' => 3},
+             {'g' => 4}]
           }
         }  
     @h1.symbolize_keys!    
     assert_equal h2, @h1
   end
-
+  
 end

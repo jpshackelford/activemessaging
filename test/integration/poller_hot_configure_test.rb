@@ -34,11 +34,11 @@ else
       # configuration messages can handle more than one at a time.
       
       # send the message
-      publish :poller_config, fixture('configure_destinations.yml')
+      publish :poller_config, fixture('hot_configure_destinations.yml')
       
       # wait a reasonable length of time for the message to be
       # picked up and processed
-      sleep 3
+      sleep 2
       
       # see that we've registered them
       d1 = registry_entry( :destination, :dest1 )

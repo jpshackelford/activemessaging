@@ -1,0 +1,17 @@
+--- 
+processor: 
+  processors: 
+  - class: MockProcessor1
+    destination: destination1
+    require: mocks/mock_processor
+    headers: 
+      key1: value1
+      key2: value2
+  - class: MockProcessor2
+    destination: destination2
+  - class: MockProcessor3
+    destination: destination2
+  - class: MockProcessor4
+    destination: destination3
+  - class: MockProcessor4
+    destination: destination4

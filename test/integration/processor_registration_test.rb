@@ -13,7 +13,7 @@ class ProcessorRegistrationTest < Test::Unit::TestCase
     # Load a processor and see whether it was automatically registered.
     require 'stubs/processor_stub'
     
-    p = registry_entry( :processor, :processor_stub )
+    p = registry_entry( :processor, :hello_world_processor_stub )
     
     assert_not_nil p, "ProcessorStub should have been registered."
 

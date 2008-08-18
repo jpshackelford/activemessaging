@@ -12,9 +12,10 @@ unless defined? ActiveMessaging
   # stdlib
   require 'logger'
   require 'monitor'
+  require 'optparse'
   require 'ostruct'
   require 'yaml'
-  
+    
   # rubygems
   require 'rubygems'
   require 'common_pool'
@@ -36,6 +37,7 @@ unless defined? ActiveMessaging
   require 'activemessaging/custom_class_registry'
   require 'activemessaging/destination_registry'
   require 'activemessaging/gateway'
+  require 'activemessaging/log_format'
   require 'activemessaging/poller'
   require 'activemessaging/poller_thread'
   require 'activemessaging/poller_thread_pool'
@@ -45,6 +47,8 @@ unless defined? ActiveMessaging
   require 'activemessaging/subscription_registry'
   require 'activemessaging/system_kernel'
   require 'activemessaging/thread_per_broker_strategy'
+  
+  require 'activemessaging/cli/windows_service'
   
   module ActiveMessaging
     
@@ -91,7 +95,7 @@ unless defined? ActiveMessaging
           end          
           ActiveMessaging.const_set(:System, SystemKernel.new)
           ActiveMessaging::System.logger = previous_logger if 
-            defined?( previous_logger ) && previous_logger != nil
+          defined?( previous_logger ) && previous_logger != nil
         end
       end
     end

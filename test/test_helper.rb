@@ -19,3 +19,10 @@ require 'framework/fixtures'
 include ActiveMessaging::Test::Logging 
 logger = new_test_logger
 ActiveMessaging::System.logger = logger 
+
+# Why isn't this part of Symbol anyway?
+class Symbol
+  def <=>( obj )
+    self.to_s <=> obj.to_s    
+  end
+end

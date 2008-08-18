@@ -7,8 +7,17 @@ module ActiveMessaging #:nodoc:
         def symbolize_keys!( depth=:shallow )
           inject(self) do |hash, (key, value)|
             
-            value.replace( value.symbolize_keys!(:deep) ) if 
-              depth == :deep && value.kind_of?( ::Hash )
+            if depth == :deep
+              case value
+              when ::Hash
+                value.replace( value.symbolize_keys!(:deep) )
+              when ::Array
+                value.map do |e| 
+                  e.symbolize_keys!(:deep) if e.kind_of?(::Hash)
+                  e
+                end
+              end  
+            end
             
             begin
               sym = key.to_sym

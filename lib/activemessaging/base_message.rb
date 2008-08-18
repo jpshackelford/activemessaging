@@ -5,7 +5,7 @@ module ActiveMessaging
     
     attr_accessor :headers, :body, :command
     
-    def initialize( headers, body, destination_name, command='MESSAGE')
+    def initialize( body, destination_name, headers = {}, command='MESSAGE')
       @headers = headers || {}
       @body    = body
       @command = command

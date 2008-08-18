@@ -19,18 +19,18 @@ module ActiveMessaging
           while( my.run_flag == true ) do
               
               # Next subscription
-              LOG.debug "Determine which destination to poll."              
+              LOG.debug "[P] Determine which destination to poll."              
               subscription = my.iter.next_destination
               
               # Grab message
-              LOG.debug "Preparing to draw message from #{subscription}."
+              LOG.debug "[P] Preparing to draw message from #{subscription}."
               m = subscription.destination.receive
               
               # Dispatch
               if m
-                LOG.debug "Poller received message."
+                LOG.debug "[P] Poller received message."
                 begin
-                  LOG.debug "Dispatching."              
+                  LOG.debug "[P] Dispatching."              
                   my.dispatcher.dispatch( m )               # get message
                   subscription.destination.received( m )    # commit transaction
                 rescue AbortMessageException => error
@@ -46,7 +46,7 @@ module ActiveMessaging
             end #while
             
           rescue StopProcessingException, Exception => e
-            LOG.warn "Poller thread id [#{name}] caught exception:\n\t#{e}\n\t"+
+            LOG.warn "[P] Poller thread id [#{name}] caught exception:\n\t#{e}\n\t"+
                       e.backtrace.join("\n\t")                      
             stop                                  
           end

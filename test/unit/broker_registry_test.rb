@@ -10,9 +10,8 @@ class BrokerRegistryTest < Test::Unit::TestCase
   def setup
     ActiveMessaging.reset!
     @registry = ActiveMessaging::BrokerRegistry.new
-    @config = ActiveMessaging::System.configure do |my|
-      my.file fixture_path('configure_brokers.yml')
-    end
+    @config = yml_fixture('configure_brokers')
+    @config.symbolize_keys!(:deep)
   end
   
   def test_auto_register_default_broker
@@ -68,7 +67,6 @@ class BrokerRegistryTest < Test::Unit::TestCase
     assert_kind_of ActiveMessaging::Broker, @registry[:broker2]
     
     # TODO verify broker options
-    # TODO Where in the code do we assume that broker name is adapter name?
     # TODO Remove dead code in base_registry specifically related to brokers. 
   end
   

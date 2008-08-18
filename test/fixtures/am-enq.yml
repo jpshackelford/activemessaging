@@ -1,0 +1,7 @@
+--- 
+destination: 
+  destinations: 
+    dest1: 
+      destination: /queue/Destination1
+      headers:
+        drb_uri: druby://localhost:8408

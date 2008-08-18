@@ -1,0 +1,54 @@
+#!/usr/bin/env ruby
+
+begin
+  require File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'activemessaging'))
+rescue Interrupt
+  exit 1
+end
+
+if RUBY_PLATFORM =~ /djgpp|(cyg|ms|bcc)win|mingw/ 
+
+  # ----------------- WINDOWS SERVICE ----------------------
+  begin
+    cli = ActiveMessaging::CLI::WindowsService
+    opts = cli.parse(ARGV)
+  rescue OptionParser::ParseError => e
+    puts e
+    exit 1
+  else  
+    # are we running as a daemon?
+    if ENV["HOMEDRIVE"].nil?   
+      cli.daemonize!
+    else # execute options from the command line
+      cli.execute( opts )
+    end
+  end
+
+else # ---------- LINUX / UNIX / BSD DAEMON ----------------
+
+  require 'daemons'
+  
+  # Initialize ActiveMessaging and start the Poller 
+    
+  start_poller = lambda do
+    ActiveMessaging::System.start_poller
+  end
+  
+  options = {
+              :app_name   => "am-poller",
+              :proc       => start_poller,
+              :monitor    => false,
+              :dir_mode   => :normal,
+              :multiple   => false,
+              :ontop      => false,
+              :backtrace  => false,
+              :log_output => true,             
+              :mode       => :proc
+            }
+            
+  controller = Daemons::Controller.new(options, ARGV)
+  controller.catch_exceptions do
+    controller.run
+  end
+
+end

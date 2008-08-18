@@ -4,9 +4,13 @@ unless defined? ActiveMessaging::Adapters::ReliableMsg
   
   module ReliableMsg
     class Client
+      
+      ERROR_INVALID_OPTION = "Invalid option '%s'. Must be one of those in INIT_OPTIONS."
+      
       def queue_manager
         qm
       end
+      
     end
   end
   
@@ -57,11 +61,11 @@ unless defined? ActiveMessaging::Adapters::ReliableMsg
               @real_destination.put( message_body, message_headers )
             rescue Exception => err
               raise err unless @broker.reliable
-              LOG.warn "Send failed, will retry in #{@broker.poll_interval} seconds."
+              LOG.warn "[A] Send failed, will retry in #{@broker.poll_interval} seconds."
               sleep @broker.poll_interval
               retry
             else
-              LOG.debug "Successfully delivered message to :#{name} " + 
+              LOG.debug "[A] Successfully delivered message to :#{name} " + 
                       "via #{@broker}."
             end        
           end
@@ -84,7 +88,7 @@ unless defined? ActiveMessaging::Adapters::ReliableMsg
             qm = @real_destination.queue_manager
             tx.store( :qm, qm ) 
             tx.store( :tid, qm.begin(@broker.tx_timeout))
-            LOG.debug "Began transaction #{tx[:tid]}"
+            LOG.debug "[A] Began transaction #{tx[:tid]}"
             begin
               # now call a get on the destination - it will use the transaction
               #the commit or the abort will occur in the received or unreceive methods
@@ -98,7 +102,7 @@ unless defined? ActiveMessaging::Adapters::ReliableMsg
               end
               
             rescue Exception => error                        
-              LOG.debug "Error in receipt of message.\n\t#{error}\n\t#{error.backtrace}"                                   
+              LOG.debug "[A] Error in receipt of message.\n\t#{error}\n\t#{error.backtrace}"                                   
               abort  #abort the transaction on error            
               raise error unless @broker.reliable            
               return nil           
@@ -110,13 +114,13 @@ unless defined? ActiveMessaging::Adapters::ReliableMsg
           # called after a message is successfully received and processed
           def received( message, headers={})          
             message.transaction[:qm].commit(message.transaction[:tid])
-            LOG.debug "Committed transaction #{message.transaction[:tid]}"
+            LOG.debug "[A] Committed transaction #{message.transaction[:tid]}"
           end
           
           # aborts receipt of message
           def unreceive message, headers={}
             message.transaction[:qm].abort(message.transaction[:tid])
-            LOG.debug "Aborted transaction #{message.transaction[:tid]}"
+            LOG.debug "[A] Aborted transaction #{message.transaction[:tid]}"
           end
           
           private
@@ -131,12 +135,12 @@ unless defined? ActiveMessaging::Adapters::ReliableMsg
           
           def abort          
             tx[:qm].abort( tx[:tid] )
-            LOG.debug "Aborted transaction #{tx[:tid]}"
+            LOG.debug "[A] Aborted transaction #{tx[:tid]}"
           end
           
           def commit
             tx[:qm].commit( tx[:tid] )
-            LOG.debug "Committed transaction #{tx[:tid]}"
+            LOG.debug "[A] Committed transaction #{tx[:tid]}"
           end
           
           def create_real_destination( destination_name, headers )

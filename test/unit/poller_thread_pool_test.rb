@@ -76,10 +76,4 @@ class PollerThreadPoolTest < Test::Unit::TestCase
   end
 end
 
-# Why isn't this part of Symbol anyway?
-class Symbol
-  def <=>( obj )
-    self.to_s <=> obj.to_s    
-  end
-end
 

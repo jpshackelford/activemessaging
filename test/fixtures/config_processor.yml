@@ -1,0 +1,6 @@
+--- 
+processor: 
+  processors: 
+  - class: SampleProcessor
+    destination: dest1
+    require: C:/Documents and Settings/shacjo/My Documents/work/activemessaging/bin/sample_processor

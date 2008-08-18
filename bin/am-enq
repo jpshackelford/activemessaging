@@ -1,0 +1,39 @@
+#!/usr/bin/env ruby
+begin
+
+  require File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'activemessaging'))
+  
+  include ActiveMessaging
+  
+rescue Interrupt
+  exit 1
+  
+else
+
+  if ARGV.empty?
+    puts "Usage: #{0} DESTINATION MESSAGE..."  
+  else
+    config_file   = "#{$0}.yml"
+    destination   =  ARGV.shift
+    message_files =  ARGV
+    
+    # Configure ActiveMessaging
+          
+    logger = ::Logger.new( "#{$0}.log" )
+    logger.formatter = ActiveMessaging::LogFormat.new
+    
+    ActiveMessaging::System.logger = logger
+              
+    ActiveMessaging::System.configure do |my|          
+      my.destination :config, '/topic/poller_configuration', :drb_uri => 'druby://localhost:8408'
+            
+      my.configuration( my.file( config_file )) if File.exists?( config_file )
+    end 
+    
+    # send messages
+    message_files.each do |f|
+      body = open(f,'r'){|f| f.read}
+      ActiveMessaging::System.gateway.publish( destination.to_sym, body )    
+    end
+  end
+end  

@@ -75,7 +75,7 @@ module ActiveMessaging
     end
     
     def name
-      "#{@destination.name}_#{@processor.name}".to_sym
+      "#{@destination.name}_#{@processor.processor_class.name.underscore}".to_sym
     end
     
     # convenience methods
