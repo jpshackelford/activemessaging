@@ -53,17 +53,17 @@ else
       
     end
   
-    def test_configure_brokers
-      flunk "Not implemented"
-    end    
-    
-    def test_configure_processors
-      flunk "Not implemented"
-    end
-    
-    def test_register_multiple_types_at_once
-      flunk "Not implemented"
-    end
+#    def test_configure_brokers
+#      flunk "Not implemented"
+#    end    
+#    
+#    def test_configure_processors
+#      flunk "Not implemented"
+#    end
+#    
+#    def test_register_multiple_types_at_once
+#      flunk "Not implemented"
+#    end
     
     
     private

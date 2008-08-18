@@ -5,11 +5,11 @@
 load 'tasks/setup.rb'
 
 ensure_in_path 'lib'
-require 'ActiveMessaging'
+require 'activemessaging'
 
 task :default => 'test:run'
 
-PROJ.name = 'ActiveMessaging'
+PROJ.name = 'activemessaging'
 PROJ.authors = 'John-Mason P. Shackelford'
 PROJ.email = 'jpshack@gmail.com'
 PROJ.url = 'http://code.google.com/p/ActiveMessaging/wiki/ActiveMessaging'

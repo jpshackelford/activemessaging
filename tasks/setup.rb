@@ -10,7 +10,7 @@ class OpenStruct; undef :gem; end
 
 PROJ = OpenStruct.new(
   # Project Defaults
-  :name => 'ActiveMessaging',
+  :name => 'activemessaging',
   :summary => 'Messaging Infrastructure for Ruby',
   :description => 'ActiveMessaging is an attempt to bring the simplicity and ' +
                   'elegance of rails development to the world of messaging.' +
