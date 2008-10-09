@@ -1,5 +1,7 @@
 require File.expand_path( File.dirname(__FILE__) + '/../test_helper' )
 
+require 'mocks/mock_processor'
+
 class ProcessorRegistryTest < Test::Unit::TestCase
   include ActiveMessaging::Test::Fixtures  
   
@@ -11,7 +13,7 @@ class ProcessorRegistryTest < Test::Unit::TestCase
   end
   
   def test_configure_single_processor
-    
+
     # configure the processor from a fixture
     @registry.configure( @config[:processor] )
     

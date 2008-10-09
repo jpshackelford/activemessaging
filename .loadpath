@@ -6,4 +6,6 @@
 	<pathentry path="GEM_LIB/stomp-1.0.5/lib" type="var"/>
 	<pathentry path="GEM_LIB/stomp-1.0.5/lib" type="var"/>
 	<pathentry path="GEM_LIB/stomp-1.0.5/lib" type="var"/>
+	<pathentry path="GEM_LIB/stomp-1.0.5/lib" type="var"/>
+	<pathentry path="GEM_LIB/stomp-1.0.5/lib" type="var"/>
 </loadpath>

@@ -10,6 +10,7 @@ require 'activemessaging'
 task :default => 'test:run'
 
 PROJ.name = 'activemessaging'
+PROJ.version = ActiveMessaging::VERSION
 PROJ.authors = 'John-Mason P. Shackelford'
 PROJ.email = 'jpshack@gmail.com'
 PROJ.url = 'http://code.google.com/p/ActiveMessaging/wiki/ActiveMessaging'

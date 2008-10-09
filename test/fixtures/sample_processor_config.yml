@@ -1,0 +1,6 @@
+--- 
+processor: 
+  processors: 
+  - class: SampleProcessor
+    destination: dest1
+    require: activemessaging/test/stubs/sample_processor

@@ -74,10 +74,16 @@ class MockProcessor
     
   end
   
-end
+end # class
 
 # Additional processor classes for use in testing setup of 
 # processor registry where multiple processor entries exist.
 4.times do |n|
-  Object.const_set("MockProcessor#{n+1}", Class.new(MockProcessor))
+  class_name = "MockProcessor#{n+1}".to_sym
+  # if the constant has not been defined, define it 
+  begin
+    Object.const_get( class_name )
+  rescue NameError
+    Object.const_set(class_name, Class.new(MockProcessor))        
+  end         
 end

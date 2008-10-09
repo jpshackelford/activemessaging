@@ -22,7 +22,7 @@ PROJ = OpenStruct.new(
   :authors => 'John-Mason P. Shackelford',
   :email => 'jpshack@gmail.com',
   :url => "\000",
-  :version => ENV['VERSION'] || '0.7.0',
+  :version => ENV['VERSION'] || '0.0.0',
   :exclude => %w(tmp$ bak$ ~$ CVS .svn/ .git/ ^pkg/ ^queues/ uuid.state),
   :release_name => ENV['RELEASE'],
 

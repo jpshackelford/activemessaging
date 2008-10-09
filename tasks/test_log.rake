@@ -22,7 +22,8 @@ namespace :test do
         end  
       end
     end
-       
+    
+    # remove seconds from time values
     h.each_pair do |k,lines|      
       lines.each{|line| line.gsub!( /(^\[.{8}\.\d{6})/ ){ $1.chop.chop }}
     end
@@ -33,7 +34,7 @@ namespace :test do
     thread_list = {}    
     h.keys.sort.each do |k|
       h[k].each do |line|
-        if line =~ /Thread\:(\d*)\]/
+        if line =~ /Thread\:(\s*\d*)\]/
           thread_list.store( $1, "%03d" % (thread_list.size + 1)) unless
           thread_list[ $1 ]          
         end

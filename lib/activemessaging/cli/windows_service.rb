@@ -130,10 +130,7 @@ module ActiveMessaging
         # configure ActiveMessaging with a topic which for incoming  
         # configuration messages.
         ActiveMessaging::System.boot_server!
-        ActiveMessaging::System.configure do |my|
-          my.destination :poller_configuration, '/topic/poller_configuration'
-          my.processor   :poller_configuration, ActiveMessaging::ConfigurationProcessor
-        end
+        ActiveMessaging::System.enable_hot_configure!
         
         # Start the ActiveMessaging Poller
         ActiveMessaging::System.start_poller

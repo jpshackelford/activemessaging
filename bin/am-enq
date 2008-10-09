@@ -15,7 +15,6 @@ else
   if ARGV.empty?
     puts "Usage: #{BIN_FILE} DESTINATION MESSAGE..."  
   else
-    config_file   = "#{BIN_FILE}.yml"
     destination   =  ARGV.shift
     message_files =  ARGV
     
@@ -25,12 +24,11 @@ else
     logger.formatter = ActiveMessaging::LogFormat.new
     
     ActiveMessaging::System.logger = logger
-              
-    ActiveMessaging::System.configure do |my|          
-      my.destination :config, '/topic/poller_configuration', :drb_uri => 'druby://localhost:8408'
-            
-      my.configuration( my.file( config_file )) if File.exists?( config_file )
-    end 
+    
+    # This bootstraps the client side. Server side entry for the queue
+    # is established in WindowsService
+    
+    ActiveMessaging::System.enable_hot_configure!
     
     # send messages
     message_files.each do |f|

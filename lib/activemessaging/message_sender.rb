@@ -4,11 +4,11 @@ module ActiveMessaging
   module MessageSender
 
     def publish destination_name, message, headers={}, timeout=10
-      Gateway.publish(destination_name, message, self.class, headers, timeout)
+      System.gateway.publish(destination_name, message, self.class, headers, timeout)
     end
 
     def receive destination_name, headers={}, timeout=10
-      Gateway.receive(destination_name, self.class, headers, timeout)
+      System.gateway.receive(destination_name, self.class, headers, timeout)
     end
 
   end

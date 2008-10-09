@@ -52,9 +52,9 @@ unless defined? ActiveMessaging
   
   module ActiveMessaging
     
-    VERSION = '0.7.0'
+    VERSION = '0.7.1'
     
-    # Used to indicate that the processing for a thread shoud complete
+    # Used to indicate that the processing for a thread should complete
     class StopProcessingException < Interrupt #:nodoc:
     end
     

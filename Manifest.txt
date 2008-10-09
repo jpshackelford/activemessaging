@@ -1,3 +1,6 @@
+.gitignore
+.loadpath
+.project
 AUTHORS.txt
 History.txt
 Manifest.txt
@@ -23,7 +26,6 @@ lib/activemessaging/broker.rb
 lib/activemessaging/broker_registry.rb
 lib/activemessaging/cli/windows_service.rb
 lib/activemessaging/configuration_processor.rb
-lib/activemessaging/connection_manager~.rb
 lib/activemessaging/core_ext.rb
 lib/activemessaging/core_ext/hash.rb
 lib/activemessaging/core_ext/hash/keys.rb
@@ -31,13 +33,11 @@ lib/activemessaging/custom_class_registry.rb
 lib/activemessaging/destination_registry.rb
 lib/activemessaging/filter.rb
 lib/activemessaging/gateway.rb
-lib/activemessaging/gateway~.rb
 lib/activemessaging/log_format.rb
 lib/activemessaging/message_sender.rb
 lib/activemessaging/poller.rb
 lib/activemessaging/poller_thread.rb
 lib/activemessaging/poller_thread_pool.rb
-lib/activemessaging/processor.rb
 lib/activemessaging/processor_registry.rb
 lib/activemessaging/round_robin_iterator.rb
 lib/activemessaging/single_thread_dispatcher.rb
@@ -46,7 +46,6 @@ lib/activemessaging/support.rb
 lib/activemessaging/system_kernel.rb
 lib/activemessaging/thread_per_broker_strategy.rb
 lib/activemessaging/trace_filter.rb
-messaging.rb.example
 spec/ActiveMessaging_spec.rb
 spec/spec_helper.rb
 tasks/ann.rake
@@ -65,13 +64,13 @@ tasks/test.rake
 tasks/test_log.rake
 test/fixtures/am-enq.yml
 test/fixtures/broker.yml
-test/fixtures/config_processor.yml
 test/fixtures/configure_brokers.yml
 test/fixtures/configure_destinations.yml
 test/fixtures/configure_processors.yml
 test/fixtures/generate_fixtures.rb
 test/fixtures/hot_configure_destinations.yml
 test/fixtures/sample
+test/fixtures/sample_processor_config.yml
 test/framework/dir_structure.rb
 test/framework/fixtures.rb
 test/framework/logging.rb
@@ -82,14 +81,6 @@ test/framework/reliable_msg.rb
 test/integration/basic_poller_test.rb
 test/integration/poller_hot_configure_test.rb
 test/integration/processor_registration_test.rb
-test/legacy/all_tests.rb
-test/legacy/asqs_test.rb
-test/legacy/config_test.rb
-test/legacy/filter_test.rb
-test/legacy/gateway_test.rb
-test/legacy/jms_test.rb
-test/legacy/reliable_msg_test.rb
-test/legacy/tracer_test.rb
 test/mocks/README.TXT
 test/mocks/mock_broker_registry.rb
 test/mocks/mock_kernel.rb
@@ -101,8 +92,8 @@ test/stubs/poller_thread_stub.rb
 test/stubs/processor_stub.rb
 test/stubs/sample_processor.rb
 test/stubs/test_message.rb
-test/test.log
 test/test_helper.rb
+test/unit/base_processor_test.rb
 test/unit/broker_registry_test.rb
 test/unit/broker_test.rb
 test/unit/configuration_processor_test.rb
