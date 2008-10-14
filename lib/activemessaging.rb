@@ -48,11 +48,14 @@ unless defined? ActiveMessaging
   require 'activemessaging/system_kernel'
   require 'activemessaging/thread_per_broker_strategy'
   
+  require 'activemessaging/cli/reliable_msg_ctrl'
   require 'activemessaging/cli/windows_service'
   
   module ActiveMessaging
     
-    VERSION = '0.7.1'
+    VERSION = '0.7.2'
+    
+    HOT_CONFIG_DEST = :hot_config
     
     # Used to indicate that the processing for a thread should complete
     class StopProcessingException < Interrupt #:nodoc:

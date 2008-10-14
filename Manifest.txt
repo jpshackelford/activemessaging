@@ -24,6 +24,7 @@ lib/activemessaging/base_processor.rb
 lib/activemessaging/base_registry.rb
 lib/activemessaging/broker.rb
 lib/activemessaging/broker_registry.rb
+lib/activemessaging/cli/reliable_msg_ctrl.rb
 lib/activemessaging/cli/windows_service.rb
 lib/activemessaging/configuration_processor.rb
 lib/activemessaging/core_ext.rb
@@ -96,6 +97,7 @@ test/test_helper.rb
 test/unit/base_processor_test.rb
 test/unit/broker_registry_test.rb
 test/unit/broker_test.rb
+test/unit/cli/windows_service_test.rb
 test/unit/configuration_processor_test.rb
 test/unit/core_ext/hash_test.rb
 test/unit/destination_registry_test.rb

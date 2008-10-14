@@ -15,12 +15,11 @@ else
       start_reliable_messaging
 
       ActiveMessaging.reset!  
-      start_poller
       
-      ActiveMessaging::System.configure do |my|
-        my.destination :poller_config, '/topic/poller_config'
-        my.processor   :poller_config, ActiveMessaging::ConfigurationProcessor
-      end            
+      start_poller :hot_config => true # start up the server side    
+
+      # client side configuration
+      ActiveMessaging::System.enable_hot_configure!      
     end
     
     def teardown
@@ -34,7 +33,8 @@ else
       # configuration messages can handle more than one at a time.
       
       # send the message
-      publish :poller_config, fixture('hot_configure_destinations.yml')
+      publish ActiveMessaging::HOT_CONFIG_DEST, 
+              fixture('hot_configure_destinations.yml')
       
       # wait a reasonable length of time for the message to be
       # picked up and processed

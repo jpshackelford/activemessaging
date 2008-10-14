@@ -46,18 +46,29 @@ module ActiveMessaging
             
     # hot configuration queue configuration
     def enable_hot_configure!
-      
-      # client side configuration
+          
+      # client side configuration      
       boot_client!
+      
+      LOG.info "Enabling hot configuration on the client side."
+      
       ActiveMessaging::System.configure do |my|
-        my.destination :poller_configuration, '/topic/poller_configuration', 
+        
+        my.destination ActiveMessaging::HOT_CONFIG_DEST, 
+                       '/topic/hot_config', 
                        :drb_uri => 'druby://localhost:8408'
+      
       end
       
-      # server side configuration
-      if @server_ready
+      # server side configuration - if we haven't called #boot_server!
+      #                             we assume we don't need to do this
+      if @server_ready 
+        
+        LOG.info "Enabling hot configuration on the server side."
+
         ActiveMessaging::System.configure do |my|
-          my.processor :poller_configuration, ActiveMessaging::ConfigurationProcessor
+          my.processor ActiveMessaging::HOT_CONFIG_DEST, 
+                       ActiveMessaging::ConfigurationProcessor
         end
       end
       

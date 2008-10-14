@@ -34,7 +34,7 @@ namespace :test do
     thread_list = {}    
     h.keys.sort.each do |k|
       h[k].each do |line|
-        if line =~ /Thread\:(\s*\d*)\]/
+        if line =~ /Thread\:(\s*\d*)/
           thread_list.store( $1, "%03d" % (thread_list.size + 1)) unless
           thread_list[ $1 ]          
         end

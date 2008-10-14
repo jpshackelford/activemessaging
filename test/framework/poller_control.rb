@@ -3,9 +3,13 @@ module ActiveMessaging
     module PollerControl
       
       # start the poller
-      def start_poller
+      def start_poller( options = {})
         @poller_thread = Thread.start do
           begin        
+            if options[:hot_config] == true
+              ActiveMessaging::System.boot_server!
+              ActiveMessaging::System.enable_hot_configure!
+            end
             ActiveMessaging::System.start_poller
           rescue Exception => exception
             Thread.current[:exception] = exception

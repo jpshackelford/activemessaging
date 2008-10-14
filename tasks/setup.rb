@@ -23,7 +23,7 @@ PROJ = OpenStruct.new(
   :email => 'jpshack@gmail.com',
   :url => "\000",
   :version => ENV['VERSION'] || '0.0.0',
-  :exclude => %w(tmp$ bak$ ~$ CVS .svn/ .git/ ^pkg/ ^queues/ uuid.state),
+  :exclude => %w(tmp$ bak$ ~$ CVS .svn/ .git/ ^pkg/ ^queues/ uuid.state ^test/*.log),
   :release_name => ENV['RELEASE'],
 
   # System Defaults
@@ -78,7 +78,7 @@ PROJ = OpenStruct.new(
 
   # Rdoc
   :rdoc => OpenStruct.new(
-    :opts => ['--inline-source', '--line-numbers', '--merge'],
+    :opts => ['--inline-source', '--line-numbers'],
     :include => %w(^lib/ ^ext/ .txt$),
     :exclude => %w(adapters/ extconf.rb$),
     :main => nil,

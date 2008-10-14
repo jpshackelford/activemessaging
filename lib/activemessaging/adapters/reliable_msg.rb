@@ -7,12 +7,29 @@ unless defined? ActiveMessaging::Adapters::ReliableMsg
       
       ERROR_INVALID_OPTION = "Invalid option '%s'. Must be one of those in INIT_OPTIONS."
       
-      def queue_manager
-        qm
-      end
+      public 
       
-    end
-  end
+      def qm
+        if uri = @drb_uri
+            # Queue specifies queue manager's URI: use that queue manager.
+           @@qm_cache[uri] ||= DRbObject.new(nil, uri)
+           if @@qm_cache[uri].alive?
+             return @@qm_cache[uri]
+           else
+             return @@qm
+           end
+        else
+            # Use the same queue manager for all queues, and cache it.
+            # Create only the first time.
+            @@qm ||= DRbObject.new(nil, @@drb_uri || DEFAULT_DRB_URI)
+        end
+      end
+
+      alias queue_manager qm
+
+    end # class
+        
+  end # module
   
   module ActiveMessaging
     module Adapters
@@ -86,6 +103,7 @@ unless defined? ActiveMessaging::Adapters::ReliableMsg
             # start a new transaction
             
             qm = @real_destination.queue_manager
+            
             tx.store( :qm, qm ) 
             tx.store( :tid, qm.begin(@broker.tx_timeout))
             LOG.debug "[A] Began transaction #{tx[:tid]}"
